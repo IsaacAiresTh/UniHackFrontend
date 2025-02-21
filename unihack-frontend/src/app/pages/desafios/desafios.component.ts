@@ -28,6 +28,7 @@ export class DesafiosComponent implements OnInit {
     { id: 10, nome: 'Desafio CTF 10', descricao: 'Descrição para o Desafio CTF 6. Isto é um espaço reservado.' },
     { id: 11, nome: 'Desafio CTF 11', descricao: 'Descrição para o Desafio CTF 6. Isto é um espaço reservado.' },
     { id: 12, nome: 'Desafio CTF 12', descricao: 'Descrição para o Desafio CTF 6. Isto é um espaço reservado.' },
+    { id: 13, nome: 'Desafio CTF 13', descricao: 'Descrição para o Desafio CTF 6. Isto é um espaço reservado.' },
 
   ];
 

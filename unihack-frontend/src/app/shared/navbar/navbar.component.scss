@@ -19,6 +19,15 @@ header {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background-color: var(--dark-bg);
   z-index: 100;
+  transition: transform 0.3s ease;
+  
+  &.hidden {
+    transform: translateY(-100%);
+  }
+  
+  &.visible {
+    transform: translateY(0);
+  }
 }
 
 /* Reutilizando os estilos originais do app.component.scss */
@@ -76,5 +85,27 @@ header {
   
   &:hover {
     background-color: var(--primary-hover);
+  }
+}
+
+/* Media queries para responsividade */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none; /* Esconde a navegação em telas menores */
+  }
+  
+  header {
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-buttons {
+    gap: 0.5rem;
+  }
+  
+  .btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 }

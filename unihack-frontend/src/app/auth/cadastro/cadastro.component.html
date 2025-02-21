@@ -1,0 +1,96 @@
+<!-- cadastro.component.html -->
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2>Cadastro</h2>
+      <p>Crie uma conta e entre para o mundo hacking</p>
+    </div>
+    
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="nome">Nome Completo</label>
+        <input 
+          type="text" 
+          id="nome" 
+          formControlName="nome" 
+          placeholder="Seu nome completo"
+          [ngClass]="{'invalid': submitted && f['nome'].errors}"
+        >
+        <div class="error-message" *ngIf="submitted && f['nome'].errors">
+          <span *ngIf="f['nome'].errors['required']">Nome é obrigatório</span>
+          <span *ngIf="f['nome'].errors['minlength']">Nome deve ter no mínimo 3 caracteres</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="matricula">Matrícula</label>
+        <input 
+          type="text" 
+          id="matricula" 
+          formControlName="matricula" 
+          placeholder="Sua matrícula de 7 números"
+          [ngClass]="{'invalid': submitted && f['matricula'].errors}"
+        >
+        <div class="error-message" *ngIf="submitted && f['matricula'].errors">
+          <span *ngIf="f['matricula'].errors['required']">Matrícula é obrigatória</span>
+          <span *ngIf="f['matricula'].errors['pattern']">A matrícula deve conter exatamente 7 números</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <div class="password-field">
+          <input 
+            [type]="hidePassword ? 'password' : 'text'" 
+            id="password" 
+            formControlName="password" 
+            placeholder="Crie uma senha forte"
+            [ngClass]="{'invalid': submitted && f['password'].errors}"
+          >
+          <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
+            <i class="icon">{{ hidePassword ? 'visibility_off' : 'visibility' }}</i>
+          </button>
+        </div>
+        <div class="error-message" *ngIf="submitted && f['password'].errors">
+          <span *ngIf="f['password'].errors['required']">Senha é obrigatória</span>
+          <span *ngIf="f['password'].errors['minlength']">Senha deve ter no mínimo 6 caracteres</span>
+          <span *ngIf="f['password'].errors['pattern']">A senha deve conter letras maiúsculas, minúsculas, números e caracteres especiais</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar Senha</label>
+        <div class="password-field">
+          <input 
+            [type]="hideConfirmPassword ? 'password' : 'text'" 
+            id="confirmPassword" 
+            formControlName="confirmPassword" 
+            placeholder="Confirme sua senha"
+            [ngClass]="{'invalid': submitted && f['confirmPassword'].errors}"
+          >
+          <button type="button" class="toggle-password" (click)="toggleConfirmPasswordVisibility()">
+            <i class="icon">{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</i>
+          </button>
+        </div>
+        <div class="error-message" *ngIf="submitted && f['confirmPassword'].errors">
+          <span *ngIf="f['confirmPassword'].errors['required']">Confirmação de senha é obrigatória</span>
+          <span *ngIf="f['confirmPassword'].errors['mustMatch']">As senhas não correspondem</span>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading">
+        <span *ngIf="loading">Cadastrando...</span>
+        <span *ngIf="!loading">Criar Conta</span>
+      </button>
+      
+      <div class="auth-separator">
+        <span>ou</span>
+      </div>
+      
+    </form>
+    
+    <div class="auth-footer">
+      <p>Já tem uma conta? <a routerLink="/auth/login">Faça login</a></p>
+    </div>
+  </div>
+</div>

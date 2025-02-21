@@ -1,4 +1,4 @@
-/* login.component.scss */
+/* cadastro.component.scss */
 
 :host {
   display: flex;
@@ -6,17 +6,6 @@
   align-items: center;
   min-height: 100vh;
   padding: 2rem 1rem;
-}
-
-.error-alert {
-  background-color: rgba(244, 67, 54, 0.1);
-  border: 1px solid rgba(244, 67, 54, 0.3);
-  color: #f44336;
-  padding: 0.75rem;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-  text-align: center;
 }
 
 .auth-container {
@@ -113,34 +102,35 @@ form {
     margin-top: 0.5rem;
   }
   
-  .form-options {
+  .terms-checkbox {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 1.5rem;
     
-    .remember-me {
-      display: flex;
-      align-items: center;
+    input[type="checkbox"] {
+      width: auto;
+      margin-right: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    
+    label {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.4;
       
-      input[type="checkbox"] {
-        margin-right: 0.5rem;
-      }
-      
-      label {
-        font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.8);
+      a {
+        color: var(--primary-color);
+        text-decoration: none;
+        
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
     
-    .forgot-password {
-      font-size: 0.85rem;
-      color: var(--primary-color);
-      text-decoration: none;
-      
-      &:hover {
-        text-decoration: underline;
-      }
+    .error-message {
+      margin-top: 0.5rem;
+      margin-left: 1.5rem;
     }
   }
   

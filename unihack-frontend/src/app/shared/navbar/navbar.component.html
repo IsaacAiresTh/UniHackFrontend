@@ -1,4 +1,4 @@
-<!-- navbar.component.html -->
+<!-- navbar.component.html (atualizado) -->
 <header [ngClass]="{'visible': isVisible, 'hidden': !isVisible}">
   <a href="#" class="logo">UniHack</a>
   <nav class="nav-links">
@@ -9,7 +9,7 @@
     <a routerLink="/equipe">Equipe</a>
   </nav>
   <div class="auth-buttons">
-    <button class="btn btn-login">Login</button>
-    <button class="btn btn-cadastrar">Cadastrar</button>
+    <button class="btn btn-login" routerLink="/auth/login">Login</button>
+    <button class="btn btn-cadastrar" routerLink="/auth/cadastro">Cadastrar</button>
   </div>
 </header>

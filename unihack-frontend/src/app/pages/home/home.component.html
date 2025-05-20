@@ -1,8 +1,67 @@
-<section class="home-container">
-  <h1>UniHack: Domine a Arte do Hacking Competitivo</h1>
-  <p>A plataforma de CTF da UNICEPLAC para desafiar, aprender e conquistar.</p>
-  <div class="buttons">
-    <a routerLink="/login" class="btn">Iniciar Jornada</a>
-    <a href="#saiba-mais" class="btn-outline">Saiba Mais</a>
-  </div>
-</section>
+<!-- home.component.html - Atualizado para corresponder à imagem -->
+<app-navbar></app-navbar>
+
+<!-- Conteúdo Principal -->
+<main>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container hero-content">
+      <h1>UniHack: Domine a Arte do Hacking Competitivo</h1>
+      <p>A plataforma de CTF da UNICEPLAC para desafiar, aprender e conquistar.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary">Iniciar Jornada</button>
+        <button class="btn btn-secondary">Saiba Mais</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sobre Section -->
+  <section class="card-section">
+    <div class="container">
+      <div class="card">
+        <h2>Sobre</h2>
+        <div class="about-content">
+          <div class="about-text">
+            <p>
+              Somos mais que um simples site, somos uma plataforma dedicada a conectar talentos com
+              desafios emocionantes para superarem seu limite no mundo da programação. Aqui oferecemos
+              a oportunidade dos nossos estudantes de todos os semestres testarem suas habilidades em
+              competições desafiadoras, ganhando experiência e reconhecimento.
+            </p>
+            <p>
+              Além de promover o aprendizado prático e o aprimoramento técnico, da plataforma de inscrição,
+              também oferecemos aos alunos a possibilidade de acessar informações relacionadas à gestão de eventos.
+            </p>
+            <button class="btn btn-inscricao">Inscrição</button>
+          </div>
+          <div class="about-image">
+            <div class="placeholder-img"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Competição Section -->
+  <section class="card-section">
+    <div class="container">
+      <div class="card">
+        <h2>Competição</h2>
+        <div class="competicao-content">
+          <p>
+            No UniHack, acreditamos que o conhecimento em segurança da informação deve ser acessível,
+            dinâmico e envolvente. Nosso objetivo é criar um ambiente onde estudantes e profissionais
+            iniciantes possam praticar técnicas de ataque e defesa de forma segura e estruturada,
+            fortalecendo suas habilidades para enfrentar os desafios reais do mundo digital.
+          </p>
+          <p>
+            Por meio de competições, rankings e desafios constantes, incentivamos o aprendizado contínuo,
+            o trabalho em equipe e o pensamento crítico, preparando a próxima geração de especialistas em cibersegurança.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<app-footer></app-footer>

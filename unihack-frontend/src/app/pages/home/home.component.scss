@@ -1,44 +1,124 @@
-.home-container {
-  padding: 4rem 2rem;
+/* home.component.scss - Reescrito sem depender de variables.scss */
+
+/* Hero Section */
+.hero-section {
+  padding: 4rem 0;
   text-align: center;
-  background: linear-gradient(to bottom, #111, #000);
-  color: white;
-  min-height: 80vh;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  margin: 2rem auto;
+  max-width: 1060px;
 }
 
-.home-container h1 {
-  font-size: 2.5rem;
+.hero-content {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.hero-section h1 {
+  font-size: 2.2rem;
   margin-bottom: 1rem;
-  color: red;
+  color: var(--primary-color);
 }
 
-.home-container p {
-  font-size: 1.2rem;
+.hero-section p {
+  font-size: 1rem;
   margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-.buttons {
+.hero-btns {
   display: flex;
   justify-content: center;
   gap: 1rem;
+  margin-top: 2rem;
 }
 
-.btn, .btn-outline {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-  text-decoration: none;
+/* Cards e Seções */
+.card-section {
+  padding: 0rem 0 3rem 0;
+}
+
+.card {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  max-width: 1060px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: var(--primary-color);
+}
+
+.card p {
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* About Section */
+.about-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .about-content {
+    flex-direction: column;
+  }
+}
+
+.about-text {
+  flex: 2;
+}
+
+.about-image {
+  flex: 1;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.placeholder-img {
+  width: 100%;
+  height: 250px;
+  background-color: #333;
   border-radius: 8px;
 }
 
-.btn {
-  background-color: red;
-  color: white;
+/* Botões da seção home */
+.btn-iniciar {
+  background-color: var(--primary-color);
+  color: black;
+  padding: 0.7rem 1.5rem;
+  text-transform: uppercase;
+  font-weight: 600;
 }
 
-.btn-outline {
-  background-color: transparent;
-  color: red;
-  border: 2px solid red;
+.btn-iniciar:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Competição Section */
+.competicao-content {
+  color: var(--text-color);
+}
+
+/* Inscrição Button */
+.btn-inscricao {
+  background-color: var(--primary-color);
+  color: black;
+  padding: 0.5rem 1.2rem;
+  margin-top: 1rem;
+  border-radius: 4px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
 }

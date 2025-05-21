@@ -1,1 +1,17 @@
-<p>desafios works!</p>
+<app-navbar></app-navbar>
+
+<div class="ctf-container">
+  <div class="ctf-card" *ngFor="let desafio of desafios">
+    <h3>{{ desafio.nome }}</h3>
+    <p>{{ desafio.descricao }}</p>
+    <button (click)="comecarDesafio(desafio.id)">Começar Desafio</button>
+  </div>
+
+  <div class="paginacao">
+    <button *ngFor="let pagina of paginas" (click)="mudarPagina(pagina)" [class.ativa]="pagina === paginaAtual">
+      {{ pagina }}
+    </button>
+  </div>
+</div>
+
+<app-footer></app-footer>

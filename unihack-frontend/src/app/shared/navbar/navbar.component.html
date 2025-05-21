@@ -1,13 +1,12 @@
-
 <!-- navbar.component.html -->
-<header>
+<header [ngClass]="{'visible': isVisible, 'hidden': !isVisible}">
   <a href="#" class="logo">UniHack</a>
   <nav class="nav-links">
-    <a href="#">Home</a>
-    <a href="#">CTFs</a>
-    <a href="#">Ranking</a>
-    <a href="#">Rei do Binário</a>
-    <a href="#">Equipe</a>
+    <a routerLink="/">Home</a>
+    <a routerLink="/desafios">CTFs</a>
+    <a routerLink="/ranking">Ranking</a>
+    <a routerLink="/rei-do-binario">Rei do Binário</a>
+    <a routerLink="/equipe">Equipe</a>
   </nav>
   <div class="auth-buttons">
     <button class="btn btn-login">Login</button>

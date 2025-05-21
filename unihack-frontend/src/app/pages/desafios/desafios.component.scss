@@ -1,0 +1,57 @@
+/* Container principal dos cards de desafios */
+.ctf-container {
+  max-width: 800px;                  // Define largura máxima para o conteúdo
+  margin: auto;                      // Centraliza horizontalmente
+  margin-top: 30px;                  // Espaçamento superior
+  color: #00E676;                    // Cor padrão do texto (verde neon)
+  font-family: Arial, sans-serif;   // Fonte padrão
+}
+
+/* Estilo de cada card de desafio */
+.ctf-card {
+  border: 1px solid #3a3a3a;         // Borda cinza escura
+  padding: 20px;                     // Espaçamento interno
+  margin-bottom: 20px;              // Espaçamento entre os cards
+  background-color: #1c1c1c;        // Fundo escuro
+  border-radius: 8px;               // Cantos arredondados
+}
+
+/* Título do card */
+.ctf-card h3 {
+  color: #00E676;                   // Cor do título igual à cor do botão
+}
+
+/* Botão "Começar Desafio" */
+.ctf-card button {
+  background-color: #00E676;       // Cor de fundo verde neon
+  color: black;                    // Cor da fonte
+  border: none;                    // Remove a borda
+  padding: 8px 16px;               // Espaçamento interno do botão
+  border-radius: 5px;              // Cantos arredondados
+  cursor: pointer;                 // Cursor de clique
+  margin-top: 10px;                // Espaço entre o botão e os elementos acima
+}
+
+/* Container da paginação */
+.paginacao {
+  display: flex;                   // Exibe botões lado a lado
+  justify-content: center;        // Centraliza os botões
+  gap: 8px;                        // Espaço entre os botões
+  margin-top: 20px;               // Espaço acima da paginação
+}
+
+/* Botões da paginação */
+.paginacao button {
+  background-color: #222;         // Fundo escuro
+  color: #00E676;                 // Cor da fonte verde
+  border: 1px solid #444;         // Borda mais clara que o fundo
+  padding: 5px 10px;              // Tamanho dos botões
+  border-radius: 4px;             // Cantos levemente arredondados
+  cursor: pointer;                // Cursor de clique
+}
+
+/* Botão da página atual */
+.paginacao button.ativa {
+  background-color: #00E676;      // Destaca com fundo verde
+  color: black;                   // Texto em preto para contraste
+}

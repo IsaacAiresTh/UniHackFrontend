@@ -122,3 +122,45 @@
   font-weight: 500;
   cursor: pointer;
 }
+
+/* Estilo para o canvas do efeito Matrix */
+.matrix-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Coloca o canvas atrás de todo o conteúdo */
+}
+
+/* Ajuste de transparência para cards para ficarem legíveis sobre o fundo Matrix */
+.card {
+  background-color: rgba(23, 23, 23, 0.8); /* Versão semi-transparente do --card-bg */
+  backdrop-filter: blur(5px); /* Adiciona um pouco de blur para melhorar a legibilidade */
+}
+
+/* Ajustes para melhor contraste com o fundo animado */
+.hero-section h1 {
+  text-shadow: 0 0 10px rgba(0, 230, 118, 0.7); /* Adiciona um brilho ao título principal */
+}
+
+section {
+  position: relative;
+}
+
+/* Aumenta o contraste do texto sobre o fundo animado */
+p {
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilo para destaque de texto importante */
+.highlight {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.marca{
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 1.2rem;
+}

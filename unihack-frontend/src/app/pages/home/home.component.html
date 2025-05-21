@@ -1,4 +1,5 @@
-<!-- home.component.html - Atualizado para corresponder à imagem -->
+<!-- home.component.html - Atualizado com o efeito Matrix -->
+<canvas id="matrixBackground" class="matrix-canvas"></canvas>
 <app-navbar></app-navbar>
 
 <!-- Conteúdo Principal -->
@@ -7,7 +8,7 @@
   <section class="hero-section">
     <div class="container hero-content">
       <h1>UniHack: Domine a Arte do Hacking Competitivo</h1>
-      <p>A plataforma de CTF da UNICEPLAC para desafiar, aprender e conquistar.</p>
+      <p>A plataforma de CTF da <strong class="marca">UNICEPLAC</strong> para desafiar, aprender e hackear.</p>
       <div class="hero-btns">
         <button class="btn btn-primary" routerLink="/auth/login">Iniciar Jornada</button>
       </div>
@@ -61,4 +62,4 @@
     </div>
   </section>
 </main>
-
+<app-footer></app-footer>

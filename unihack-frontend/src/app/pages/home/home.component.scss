@@ -4,7 +4,8 @@
 .hero-section {
   padding: 4rem 0;
   text-align: center;
-  background-color: var(--card-bg);
+  background-color: rgba(23, 23, 23, 0.8); /* Versão semi-transparente do --card-bg */
+  backdrop-filter: blur(5px); /* Adiciona um pouco de blur para melhorar a legibilidade */
   border-radius: 8px;
   margin: 2rem auto;
   max-width: 1060px;

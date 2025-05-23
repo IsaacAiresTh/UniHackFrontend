@@ -23,12 +23,16 @@ export class HomeComponent implements OnInit, OnDestroy {
   private animationFrameId: number | null = null;
   private resizeListener: (() => void) | null = null;
   private fontSize: number = 12;
+  private fontLoaded: boolean = false;
 
   ngOnInit(): void {
-    // Inicializar canvas após o componente ser carregado
-    setTimeout(() => {
-      this.initMatrixEffect();
-    }, 100);
+    // Carregar a fonte antes de inicializar o efeito Matrix
+    this.loadCustomFont().then(() => {
+      // Inicializar canvas após a fonte ser carregada
+      setTimeout(() => {
+        this.initMatrixEffect();
+      }, 100);
+    });
   }
 
   ngOnDestroy(): void {
@@ -48,6 +52,37 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.resizeListener !== null) {
       window.removeEventListener('resize', this.resizeListener);
       this.resizeListener = null;
+    }
+  }
+
+  private async loadCustomFont(): Promise<void> {
+    try {
+      // Criar o elemento style se não existir
+      if (!document.querySelector('#uniceplac-font-style')) {
+        const style = document.createElement('style');
+        style.id = 'uniceplac-font-style';
+        style.textContent = `@import url('https://fonts.googleapis.com/css2?family=WDXL+Lubrifont+TC&display=swap');`;
+        document.head.appendChild(style);
+      }
+
+      // Usar Font Loading API se disponível
+      if ('fonts' in document) {
+        const font = new FontFace('WDXL Lubrifont TC', "url('https://fonts.gstatic.com/s/wdxllubrifonttc/v1/9Bt43C9KxNEAVTHCZI-2FlRL6o6CWiJGAYM.woff2')");
+        await font.load();
+        document.fonts.add(font);
+        this.fontLoaded = true;
+      } else {
+        // Fallback para navegadores que não suportam Font Loading API
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            this.fontLoaded = true;
+            resolve(void 0);
+          }, 2000); // Aguarda 2 segundos para garantir que a fonte foi carregada
+        });
+      }
+    } catch (error) {
+      console.warn('Erro ao carregar fonte personalizada, usando fonte padrão:', error);
+      this.fontLoaded = true; // Continua mesmo sem a fonte personalizada
     }
   }
 
@@ -138,14 +173,17 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.ctx.font = `${this.fontSize}px monospace`;
     
     if (this.showUniceplac) {
+      // Configurar fonte personalizada para UNICEPLAC
+      const fontFamily = this.fontLoaded ? 'WDXL Lubrifont TC' : 'monospace';
+      this.ctx.font = `bold 48px "${fontFamily}", monospace`;
+      
       // Exibir "UNICEPLAC" na posição definida
       this.ctx.fillStyle = '#00E676';
-      this.ctx.font = 'bold 48px monospace';
       this.ctx.fillText(this.uniceplac, this.uniceplacPosition.x, this.uniceplacPosition.y);
       
-      // Efeito de brilho
+      // Efeito de brilho sutil para destacar a fonte personalizada
       this.ctx.shadowColor = '#00E676';
-      this.ctx.shadowBlur = 8;
+      this.ctx.shadowBlur = 6;
       this.ctx.fillText(this.uniceplac, this.uniceplacPosition.x, this.uniceplacPosition.y);
       this.ctx.shadowBlur = 0;
     }

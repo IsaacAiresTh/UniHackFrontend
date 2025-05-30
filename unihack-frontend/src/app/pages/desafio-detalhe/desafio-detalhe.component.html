@@ -1,0 +1,19 @@
+<app-navbar></app-navbar>
+<div class="desafio-detalhe-container">
+  <div *ngIf="isLoading" class="loading-message">Carregando desafio...</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <div *ngIf="desafio && !isLoading && !errorMessage">
+    <header class="desafio-header">
+      <h1>{{ desafio.titulo }}</h1>
+    </header>
+    <section class="desafio-conteudo">
+      <h2>Sobre a Vulnerabilidade</h2>
+      <p [innerHTML]="desafio.explicacaoVulnerabilidade"></p> <div class="desafio-actions">
+        <button (click)="iniciarDesafioReal()" class="btn btn-primary">Começar o Desafio de Verdade</button>
+        <button routerLink="/desafios" class="btn btn-secondary">Voltar para Lista de Desafios</button>
+      </div>
+    </section>
+  </div>
+</div>
+<app-footer></app-footer>

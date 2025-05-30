@@ -1,52 +1,127 @@
+// src/app/pages/desafios/desafios.component.ts
 import { Component, OnInit } from '@angular/core';
-import { NavbarComponent } from "../../shared/navbar/navbar.component";
-import { FooterComponent } from "../../shared/footer/footer.component";
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common'; // Para *ngFor, etc.
+import { RouterModule } from '@angular/router'; // Para routerLink
+import { NavbarComponent } from '../../shared/navbar/navbar.component';
+import { FooterComponent } from '../../shared/footer/footer.component';
+import { FormsModule } from '@angular/forms';
+// No futuro, você pode ter um serviço para buscar esses desafios
+// import { DesafiosService } from './desafios.service';
+
+// Interface para os itens da lista de desafios
+export interface DesafioInfo {
+  id: string; // Identificador único para a rota (ex: 'sql-injection-basico')
+  titulo: string;
+  descricaoCurta: string;
+  categoria: string;
+  pontuacao: number;
+  nivelDificuldade: 'Fácil' | 'Médio' | 'Difícil' | 'Insano';
+  tags?: string[];
+  isCompleto?: boolean; // Opcional: para marcar desafios já feitos pelo usuário
+}
 
 @Component({
   selector: 'app-desafios',
+  standalone: true,
+  imports: [CommonModule, RouterModule, NavbarComponent, FooterComponent, FormsModule],
   templateUrl: './desafios.component.html',
-  styleUrls: ['./desafios.component.scss'],
-  imports: [NavbarComponent, FooterComponent, CommonModule]
+  styleUrls: ['./desafios.component.scss']
+  // providers: [DesafiosService] // Se você criar um serviço
 })
 export class DesafiosComponent implements OnInit {
-  desafios: any[] = [];
-  paginaAtual: number = 1;
-  itensPorPagina: number = 6;
-  paginas: number[] = [];
 
-  todosDesafios = [
-    { id: 1, nome: 'Desafio SQL Injection', descricao: 'Nível Iniciante. Aplique seus conhecimentos de scripts sql para utilizar um comando e burlar a tela de login do NeoBank' },
-    { id: 2, nome: 'Desafio CTF 2', descricao: 'Descrição para o Desafio CTF 2. Isto é um espaço reservado.' },
-    { id: 3, nome: 'Desafio CTF 3', descricao: 'Descrição para o Desafio CTF 3. Isto é um espaço reservado.' },
-    { id: 4, nome: 'Desafio CTF 4', descricao: 'Descrição para o Desafio CTF 4. Isto é um espaço reservado.' },
-    { id: 5, nome: 'Desafio CTF 5', descricao: 'Descrição para o Desafio CTF 5. Isto é um espaço reservado.' },
-    { id: 6, nome: 'Desafio CTF 6', descricao: 'Descrição para o Desafio CTF 6. Isto é um espaço reservado.' },
-    { id: 7, nome: 'Desafio CTF 7', descricao: 'Descrição para o Desafio CTF 6. Isto é um espaço reservado.' },
-    { id: 8, nome: 'Desafio CTF 8', descricao: 'Descrição para o Desafio CTF 6. Isto é um espaço reservado.' },
-    { id: 9, nome: 'Desafio CTF 9', descricao: 'Descrição para o Desafio CTF 6. Isto é um espaço reservado.' },
-    { id: 10, nome: 'Desafio CTF 10', descricao: 'Descrição para o Desafio CTF 6. Isto é um espaço reservado.' },
-    { id: 11, nome: 'Desafio CTF 11', descricao: 'Descrição para o Desafio CTF 6. Isto é um espaço reservado.' },
-    { id: 12, nome: 'Desafio CTF 12', descricao: 'Descrição para o Desafio CTF 6. Isto é um espaço reservado.' },
-    { id: 13, nome: 'Desafio CTF 13', descricao: 'Descrição para o Desafio CTF 6. Isto é um espaço reservado.' },
+  listaDeDesafios: DesafioInfo[] = [];
+  categorias: string[] = [];
+  filtroCategoriaSelecionada: string = 'Todas';
+  filtroBusca: string = '';
 
+  // Dados mockados para os desafios. Substitua por dados de um serviço/backend.
+  private todosOsDesafios: DesafioInfo[] = [
+    {
+      id: 'sql-injection-1',
+      titulo: 'SQL Injection Básico',
+      descricaoCurta: 'Aprenda os fundamentos da injeção de SQL e explore um login vulnerável.',
+      categoria: 'Web',
+      pontuacao: 100,
+      nivelDificuldade: 'Fácil',
+      tags: ['SQL', 'Injeção', 'Autenticação'],
+      isCompleto: false,
+    },
+    {
+      id: 'xss-basico-1',
+      titulo: 'XSS Refletido Simples',
+      descricaoCurta: 'Entenda como o XSS refletido funciona injetando scripts em um campo de busca.',
+      categoria: 'Web',
+      pontuacao: 150,
+      nivelDificuldade: 'Fácil',
+      tags: ['XSS', 'JavaScript', 'Frontend'],
+      isCompleto: true, // Exemplo de desafio completo
+    },
+    {
+      id: 'cripto-cesar-1',
+      titulo: 'Cifra de César',
+      descricaoCurta: 'Decifre uma mensagem criptografada com a clássica Cifra de César.',
+      categoria: 'Criptografia',
+      pontuacao: 50,
+      nivelDificuldade: 'Fácil',
+      tags: ['Cripto Clássica', 'Substituição'],
+    },
+    {
+      id: 'engenharia-social-1',
+      titulo: 'Phishing Elementar',
+      descricaoCurta: 'Analise um e-mail e identifique sinais de uma tentativa de phishing.',
+      categoria: 'Engenharia Social',
+      pontuacao: 200,
+      nivelDificuldade: 'Médio',
+      tags: ['Phishing', 'Análise'],
+    },
+    {
+      id: 'forense-imagem-1',
+      titulo: 'Esteganografia em Imagem',
+      descricaoCurta: 'Encontre a mensagem escondida dentro de uma imagem aparentemente normal.',
+      categoria: 'Forense',
+      pontuacao: 250,
+      nivelDificuldade: 'Médio',
+      tags: ['Esteganografia', 'Imagem', 'Metadados'],
+    }
   ];
 
+  constructor(/* private desafiosService: DesafiosService */) { }
+
   ngOnInit(): void {
-    const totalPaginas = Math.ceil(this.todosDesafios.length / this.itensPorPagina);
-    this.paginas = Array.from({ length: totalPaginas }, (_, i) => i + 1);
-    this.mudarPagina(1);
+    // this.desafiosService.getDesafios().subscribe(dados => this.listaDeDesafios = dados);
+    this.listaDeDesafios = [...this.todosOsDesafios]; // Cópia para permitir filtragem
+    this.categorias = ['Todas', ...new Set(this.todosOsDesafios.map(d => d.categoria))]; // Extrai categorias únicas
+    this.aplicarFiltros();
   }
 
-  mudarPagina(pagina: number) {
-    this.paginaAtual = pagina;
-    const inicio = (pagina - 1) * this.itensPorPagina;
-    const fim = inicio + this.itensPorPagina;
-    this.desafios = this.todosDesafios.slice(inicio, fim);
+  aplicarFiltros(): void {
+    let desafiosFiltrados = this.todosOsDesafios;
+
+    // Filtro por categoria
+    if (this.filtroCategoriaSelecionada !== 'Todas') {
+      desafiosFiltrados = desafiosFiltrados.filter(d => d.categoria === this.filtroCategoriaSelecionada);
+    }
+
+    // Filtro por busca (título ou descrição)
+    if (this.filtroBusca.trim() !== '') {
+      const termoBuscaLower = this.filtroBusca.toLowerCase();
+      desafiosFiltrados = desafiosFiltrados.filter(d =>
+        d.titulo.toLowerCase().includes(termoBuscaLower) ||
+        d.descricaoCurta.toLowerCase().includes(termoBuscaLower) ||
+        (d.tags && d.tags.some(tag => tag.toLowerCase().includes(termoBuscaLower)))
+      );
+    }
+    this.listaDeDesafios = desafiosFiltrados;
   }
 
-  comecarDesafio(id: number) {
-    // Lógica para redirecionar ou iniciar o desafio
-    console.log('Desafio iniciado:', id);
+  selecionarCategoria(categoria: string): void {
+    this.filtroCategoriaSelecionada = categoria;
+    this.aplicarFiltros();
+  }
+
+  limparBusca(): void {
+    this.filtroBusca = '';
+    this.aplicarFiltros();
   }
 }

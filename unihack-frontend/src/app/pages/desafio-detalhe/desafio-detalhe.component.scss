@@ -1,0 +1,122 @@
+// src/app/pages/desafio-detalhe/desafio-detalhe.component.scss
+
+:host {
+  display: block;
+  padding-bottom: 4rem; // Espaço para o footer, ajuste conforme necessário
+}
+
+.desafio-detalhe-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--card-bg); // Utiliza o fundo de card definido globalmente
+  border-radius: var(--border-radius); // Utiliza o raio de borda global
+  box-shadow: var(--box-shadow-lg); // Utiliza uma sombra global
+  color: var(--text-color); // Utiliza a cor de texto principal
+}
+
+.loading-message,
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  font-size: var(--font-size-lg); // Utiliza tamanho de fonte global
+}
+
+.error-message {
+  color: var(--error-color); // Utiliza cor de erro global
+  background-color: rgba(var(--error-color), 0.1);
+  border: 1px solid var(--error-color); // Utiliza cor de erro global
+  border-radius: var(--border-radius); // Utiliza o raio de borda global
+}
+
+.desafio-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--divider-color); // Utiliza cor de divisor global
+
+  h1 {
+    font-family: var(--font-family-display); // Utiliza fonte de display global
+    font-size: var(--font-size-xxl); // Utiliza tamanho de fonte global
+    color: var(--primary-color); // Utiliza cor primária global
+    text-align: center;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.5); // Utiliza cor primária RGB global
+  }
+}
+
+.desafio-conteudo {
+  h2 {
+    font-family: var(--font-family-display); // Utiliza fonte de display global
+    font-size: var(--font-size-xl); // Utiliza tamanho de fonte global
+    color: var(--secondary-color); // Utiliza cor secundária global
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  p, li { // Estilo para parágrafos e itens de lista, se houver
+    font-size: var(--font-size-base); // Utiliza tamanho de fonte global
+    line-height: 1.7;
+    color: var(--text-secondary); // Utiliza cor de texto secundária
+    margin-bottom: 1rem;
+
+    a {
+      color: var(--primary-color); // Utiliza cor primária global
+      text-decoration: none;
+      &:hover {
+        color: var(--primary-hover); // Utiliza cor primária hover global
+        text-decoration: underline;
+      }
+    }
+
+    // Se você usar [innerHTML] e quiser estilizar tags específicas dentro dele:
+    // Exemplo:
+    // code {
+    //   font-family: var(--font-family-monospace);
+    //   background-color: rgba(var(--primary-color-rgb), 0.1);
+    //   color: var(--primary-color);
+    //   padding: 0.2em 0.4em;
+    //   border-radius: 3px;
+    //   font-size: 0.9em;
+    // }
+  }
+}
+
+.desafio-actions {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--divider-color); // Utiliza cor de divisor global
+  display: flex;
+  gap: 1rem; // Espaçamento entre os botões
+  justify-content: center; // Centraliza os botões se houver espaço
+
+  .btn {
+    padding: 0.75rem 1.5rem; // Ajuste o padding dos botões se necessário
+    min-width: 200px; // Largura mínima para os botões
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .desafio-detalhe-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .desafio-header h1 {
+    font-size: var(--font-size-xl); // Utiliza tamanho de fonte global
+  }
+
+  .desafio-conteudo h2 {
+    font-size: var(--font-size-lg); // Utiliza tamanho de fonte global
+  }
+
+  .desafio-actions {
+    flex-direction: column; // Botões um abaixo do outro em telas menores
+    align-items: center;
+
+    .btn {
+      width: 100%; // Botões ocupam largura total
+      max-width: 300px; // Mas não ficam excessivamente largos
+    }
+  }
+}

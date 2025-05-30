@@ -12,6 +12,7 @@ export const routes: Routes = [
   },
   { path: 'desafios', loadComponent: () => import('./pages/desafios/desafios.component').then(m => m.DesafiosComponent) },
   { path: 'ranking', loadComponent: () => import('./pages/ranking/ranking.component').then(m => m.RankingComponent) }, 
+  {path: 'desafios/:id', loadComponent: () => import('./pages/desafio-detalhe/desafio-detalhe.component').then(m => m.DesafioDetalheComponent)},
   // Rota curinga para página não encontrada
   { path: '**', redirectTo: '' }
 ];

@@ -18,7 +18,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of rankingData">
+        <tr *ngFor="let user of rankingData" [ngClass]="{'top-three': user.posicao <= 3, 'current-user': user.nome === 'SeuNomeDeUsuario'}">
           <td class="position">
             <span class="rank-badge rank-{{user.posicao}}">{{ user.posicao }}</span>
           </td>

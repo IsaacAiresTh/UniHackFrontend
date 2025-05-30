@@ -1,57 +1,254 @@
-/* Container principal dos cards de desafios */
-.ctf-container {
-  max-width: 800px;                  // Define largura máxima para o conteúdo
-  margin: auto;                      // Centraliza horizontalmente
-  margin-top: 30px;                  // Espaçamento superior
-  color: #00E676;                    // Cor padrão do texto (verde neon)
-  font-family: Arial, sans-serif;   // Fonte padrão
+// src/app/pages/desafios/desafios.component.scss
+@use '../../../styles.scss' as s; // Importar variáveis globais se necessário
+
+:host {
+  display: block;
+  padding-bottom: 4rem; // Para o footer
 }
 
-/* Estilo de cada card de desafio */
-.ctf-card {
-  border: 1px solid #3a3a3a;         // Borda cinza escura
-  padding: 20px;                     // Espaçamento interno
-  margin-bottom: 20px;              // Espaçamento entre os cards
-  background-color: #1c1c1c;        // Fundo escuro
-  border-radius: 8px;               // Cantos arredondados
+.desafios-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem; // Adiciona padding lateral
 }
 
-/* Título do card */
-.ctf-card h3 {
-  color: #00E676;                   // Cor do título igual à cor do botão
+.desafios-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+
+  h1 {
+    font-family: var(--font-family-display);
+    font-size: var(--font-size-xxl);
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.5);
+  }
+
+  p {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+  }
 }
 
-/* Botão "Começar Desafio" */
-.ctf-card button {
-  background-color: #00E676;       // Cor de fundo verde neon
-  color: black;                    // Cor da fonte
-  border: none;                    // Remove a borda
-  padding: 8px 16px;               // Espaçamento interno do botão
-  border-radius: 5px;              // Cantos arredondados
-  cursor: pointer;                 // Cursor de clique
-  margin-top: 10px;                // Espaço entre o botão e os elementos acima
+.filtros-desafios {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow-md);
+
+  .filtro-busca {
+    display: flex;
+    align-items: center;
+    input[type="text"] {
+      flex-grow: 1;
+      padding: 0.75rem 1rem;
+      font-size: var(--font-size-base);
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      &:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.3);
+      }
+    }
+    .btn-limpar-busca {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      padding: 0 0.75rem;
+      cursor: pointer;
+      &:hover {
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  .filtro-categorias {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    .label-filtro {
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-right: 0.5rem;
+    }
+    .btn-categoria {
+      padding: 0.5rem 1rem;
+      font-size: var(--font-size-sm);
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      border-radius: 20px; // Botões mais arredondados
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+      &:hover {
+        background-color: rgba(var(--primary-color-rgb), 0.2);
+        border-color: var(--primary-color);
+      }
+      &.active {
+        background-color: var(--primary-color);
+        color: var(--background-color); // Texto escuro para contraste
+        border-color: var(--primary-color);
+        font-weight: bold;
+      }
+    }
+  }
 }
 
-/* Container da paginação */
-.paginacao {
-  display: flex;                   // Exibe botões lado a lado
-  justify-content: center;        // Centraliza os botões
-  gap: 8px;                        // Espaço entre os botões
-  margin-top: 20px;               // Espaço acima da paginação
+
+.lista-desafios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem; // Espaçamento entre os cards
 }
 
-/* Botões da paginação */
-.paginacao button {
-  background-color: #222;         // Fundo escuro
-  color: #00E676;                 // Cor da fonte verde
-  border: 1px solid #444;         // Borda mais clara que o fundo
-  padding: 5px 10px;              // Tamanho dos botões
-  border-radius: 4px;             // Cantos levemente arredondados
-  cursor: pointer;                // Cursor de clique
+.card-desafio {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; // Garante que o footer do card fique na base
+  box-shadow: var(--box-shadow-md);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border-left: 4px solid transparent; // Para indicar o status (ex: categoria)
+
+  // Cores da borda por categoria (exemplo)
+  &[class*="Web"] { border-left-color: var(--accent-color); }
+  &[class*="Criptografia"] { border-left-color: var(--secondary-color); }
+  // Adicione mais conforme necessário
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-lg);
+  }
+
+  .card-desafio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+
+    .categoria-tag {
+      font-size: var(--font-size-sm);
+      background-color: rgba(var(--primary-color-rgb), 0.15);
+      color: var(--primary-color);
+      padding: 0.25rem 0.6rem;
+      border-radius: 12px;
+    }
+    .pontuacao-tag {
+      font-size: var(--font-size-sm);
+      font-weight: bold;
+      color: var(--secondary-color);
+    }
+  }
+
+  .titulo-desafio {
+    font-family: var(--font-family-display);
+    font-size: 1.3rem; // Ajustado para card
+    color: var(--text-color);
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .descricao-desafio {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    flex-grow: 1; // Faz a descrição ocupar o espaço disponível
+  }
+
+  .tags-desafio {
+    margin-bottom: 1rem;
+    .tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      background-color: var(--surface-color);
+      color: var(--text-secondary);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      margin-right: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+  }
+
+  .card-desafio-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--divider-color);
+    padding-top: 1rem;
+    margin-top: auto; // Empurra para o final do card
+
+    .nivel-dificuldade {
+      font-weight: 500;
+      font-size: var(--font-size-sm);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      color: #fff;
+
+      &.nivel-fácil { background-color: var(--success-color); }
+      &.nivel-médio { background-color: var(--warning-color); color: #333; }
+      &.nivel-difícil { background-color: var(--error-color); }
+      &.nivel-insano { background-color: var(--accent-color); }
+    }
+
+    .btn-comecar {
+      // Os estilos base vêm de styles.scss
+      // Adicionar ícone se desejar
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
+  &.desafio-completo {
+    border-left-color: var(--success-color);
+    opacity: 0.8; // Levemente esmaecido
+    .btn-comecar {
+      background-color: var(--success-color);
+      &:hover {
+        background-color: var(--success-color-darkened);
+      }
+    }
+    .desafio-completo-icon {
+      color: #fff; // Ou cor que contraste com o botão
+    }
+  }
 }
 
-/* Botão da página atual */
-.paginacao button.ativa {
-  background-color: #00E676;      // Destaca com fundo verde
-  color: black;                   // Texto em preto para contraste
+.sem-desafios-mensagem {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary);
+  p {
+    font-size: var(--font-size-lg);
+    margin-bottom: 1.5rem;
+  }
+  .no-results-img {
+    max-width: 200px;
+    opacity: 0.7;
+  }
+}
+
+// Responsividade para filtros e grid
+@media (max-width: 768px) {
+  .filtros-desafios {
+    .filtro-categorias {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  .lista-desafios-grid {
+    grid-template-columns: 1fr; // Uma coluna em telas menores
+  }
 }

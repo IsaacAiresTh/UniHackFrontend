@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Importe CommonModule
-import { NavbarComponent } from '../../shared/navbar/navbar.component'; // Importe se necessário
-import { FooterComponent } from '../../shared/footer/footer.component'; // Importe se necessário
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router'; // <<< ADICIONAR ESTA LINHA
+import { NavbarComponent } from '../../shared/navbar/navbar.component';
+import { FooterComponent } from '../../shared/footer/footer.component';
 
 // Interface para tipar os dados do usuário no ranking
 interface RankingUser {
@@ -15,14 +16,18 @@ interface RankingUser {
 @Component({
   selector: 'app-ranking',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, FooterComponent], // Adicione CommonModule e outros componentes compartilhados
+  imports: [
+    CommonModule,
+    RouterModule, // <<< ADICIONAR RouterModule AQUI
+    NavbarComponent,
+    FooterComponent
+  ],
   templateUrl: './ranking.component.html',
-  styleUrls: ['./ranking.component.scss']
+  styleUrls: ['./ranking.component.scss'] // Mantido como styleUrls, que é comum
 })
 export class RankingComponent implements OnInit {
 
   // Dados de exemplo para o ranking
-  // No futuro, você buscará esses dados de um backend
   rankingData: RankingUser[] = [
     { posicao: 1, nome: 'CyberNinja', pontuacao: 1500, desafiosCompletos: 10, avatarUrl: 'assets/avatars/ninja.png' },
     { posicao: 2, nome: 'BinaryBard', pontuacao: 1450, desafiosCompletos: 9, avatarUrl: 'assets/avatars/bard.png' },

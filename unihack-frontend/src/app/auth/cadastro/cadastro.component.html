@@ -1,97 +1,57 @@
 <app-navbar></app-navbar>
-<!-- cadastro.component.html -->
-<div class="auth-container">
-  <div class="auth-card">
-    <div class="auth-header">
-      <h2>Cadastro</h2>
-      <p>Crie uma conta e entre para o mundo hacking!</p>
+<main class="cadastro-container">
+  <div class="cadastro-card">
+    <h2>Criar Conta</h2>
+    <p>Junte-se à comunidade UniHack!</p>
+
+    <div *ngIf="isLoading" class="loading-indicator">
+      Cadastrando... Por favor, aguarde.
     </div>
-    
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+    <div *ngIf="successMessage && !isLoading" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+
+    <div *ngIf="errorMessage && !isLoading" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()" *ngIf="!successMessage">
       <div class="form-group">
         <label for="nome">Nome Completo</label>
-        <input 
-          type="text" 
-          id="nome" 
-          formControlName="nome" 
-          placeholder="Seu nome completo"
-          [ngClass]="{'invalid': submitted && f['nome'].errors}"
-        >
-        <div class="error-message" *ngIf="submitted && f['nome'].errors">
-          <span *ngIf="f['nome'].errors['required']">Nome é obrigatório</span>
-          <span *ngIf="f['nome'].errors['minlength']">Nome deve ter no mínimo 3 caracteres</span>
+        <input type="text" id="nome" formControlName="nome" placeholder="Seu nome completo">
+        <div *ngIf="cadastroForm.get('nome')?.invalid && (cadastroForm.get('nome')?.dirty || cadastroForm.get('nome')?.touched)" class="error-message">
+          <small *ngIf="cadastroForm.get('nome')?.errors?.['required']">Nome é obrigatório.</small>
+          <small *ngIf="cadastroForm.get('nome')?.errors?.['minlength']">Nome deve ter no mínimo 3 caracteres.</small>
         </div>
       </div>
-      
+
       <div class="form-group">
-        <label for="matricula">Matrícula</label>
-        <input 
-          type="text" 
-          id="matricula" 
-          formControlName="matricula" 
-          placeholder="Sua matrícula de 7 números"
-          [ngClass]="{'invalid': submitted && f['matricula'].errors}"
-        >
-        <div class="error-message" *ngIf="submitted && f['matricula'].errors">
-          <span *ngIf="f['matricula'].errors['required']">Matrícula é obrigatória</span>
-          <span *ngIf="f['matricula'].errors['pattern']">A matrícula deve conter exatamente 7 números</span>
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" placeholder="seuemail@exemplo.com">
+        <div *ngIf="cadastroForm.get('email')?.invalid && (cadastroForm.get('email')?.dirty || cadastroForm.get('email')?.touched)" class="error-message">
+          <small *ngIf="cadastroForm.get('email')?.errors?.['required']">Email é obrigatório.</small>
+          <small *ngIf="cadastroForm.get('email')?.errors?.['email']">Formato de email inválido.</small>
         </div>
       </div>
-      
+
       <div class="form-group">
-        <label for="password">Senha</label>
-        <div class="password-field">
-          <input 
-            [type]="hidePassword ? 'password' : 'text'" 
-            id="password" 
-            formControlName="password" 
-            placeholder="Crie uma senha forte"
-            [ngClass]="{'invalid': submitted && f['password'].errors}"
-          >
-          <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
-            <i class="icon">{{ hidePassword ? 'visibility_off' : 'visibility' }}</i>
-          </button>
-        </div>
-        <div class="error-message" *ngIf="submitted && f['password'].errors">
-          <span *ngIf="f['password'].errors['required']">Senha é obrigatória</span>
-          <span *ngIf="f['password'].errors['minlength']">Senha deve ter no mínimo 6 caracteres</span>
-          <span *ngIf="f['password'].errors['pattern']">A senha deve conter letras maiúsculas, minúsculas, números e caracteres especiais</span>
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" formControlName="senha" placeholder="Crie uma senha forte">
+        <div *ngIf="cadastroForm.get('senha')?.invalid && (cadastroForm.get('senha')?.dirty || cadastroForm.get('senha')?.touched)" class="error-message">
+          <small *ngIf="cadastroForm.get('senha')?.errors?.['required']">Senha é obrigatória.</small>
+          <small *ngIf="cadastroForm.get('senha')?.errors?.['minlength']">Senha deve ter no mínimo 6 caracteres.</small>
         </div>
       </div>
-      
-      <div class="form-group">
-        <label for="confirmPassword">Confirmar Senha</label>
-        <div class="password-field">
-          <input 
-            [type]="hideConfirmPassword ? 'password' : 'text'" 
-            id="confirmPassword" 
-            formControlName="confirmPassword" 
-            placeholder="Confirme sua senha"
-            [ngClass]="{'invalid': submitted && f['confirmPassword'].errors}"
-          >
-          <button type="button" class="toggle-password" (click)="toggleConfirmPasswordVisibility()">
-            <i class="icon">{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</i>
-          </button>
-        </div>
-        <div class="error-message" *ngIf="submitted && f['confirmPassword'].errors">
-          <span *ngIf="f['confirmPassword'].errors['required']">Confirmação de senha é obrigatória</span>
-          <span *ngIf="f['confirmPassword'].errors['mustMatch']">As senhas não correspondem</span>
-        </div>
-      </div>
-      
-      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading">
-        <span *ngIf="loading">Cadastrando...</span>
-        <span *ngIf="!loading">Criar Conta</span>
+
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="isLoading || cadastroForm.invalid">
+        {{ isLoading ? 'Enviando...' : 'Cadastrar' }}
       </button>
-      
-      <div class="auth-separator">
-        <span>ou</span>
-      </div>
-      
     </form>
-    
-    <div class="auth-footer">
-      <p>Já tem uma conta? <a routerLink="/auth/login">Faça login</a></p>
+
+    <div class="alternative-action" *ngIf="!successMessage">
+      Já tem uma conta? <a routerLink="/auth/login">Faça Login</a>
     </div>
   </div>
-</div>
+</main>
+<app-footer></app-footer>

@@ -1,18 +1,16 @@
-<!-- login.component.html -->
-<div class="auth-container">
-  <div class="auth-card">
+<app-navbar></app-navbar> <div class="auth-container"> <div class="auth-card">
     <div class="auth-header">
       <h2>Login</h2>
       <p>Entre na sua conta e comece a hackear</p>
     </div>
-    
+
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label for="matricula">Matrícula</label>
-        <input 
-          type="text" 
-          id="matricula" 
-          formControlName="matricula" 
+        <input
+          type="text"
+          id="matricula"
+          formControlName="matricula"
           placeholder="Sua matrícula de 7 números"
           [ngClass]="{'invalid': submitted && f['matricula'].errors}"
         >
@@ -21,19 +19,19 @@
           <span *ngIf="f['matricula'].errors['pattern']">A matrícula deve conter exatamente 7 números</span>
         </div>
       </div>
-      
+
       <div class="form-group">
         <label for="password">Senha</label>
         <div class="password-field">
-          <input 
-            [type]="hidePassword ? 'password' : 'text'" 
-            id="password" 
-            formControlName="password" 
+          <input
+            [type]="hidePassword ? 'password' : 'text'"
+            id="password"
+            formControlName="password"
             placeholder="Sua senha"
             [ngClass]="{'invalid': submitted && f['password'].errors}"
           >
           <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
-            <i class="icon">{{ hidePassword ? 'visibility_off' : 'visibility' }}</i>
+            <i class="icon material-icons">{{ hidePassword ? 'visibility_off' : 'visibility' }}</i>
           </button>
         </div>
         <div class="error-message" *ngIf="submitted && f['password'].errors">
@@ -41,22 +39,23 @@
           <span *ngIf="f['password'].errors['minlength']">Senha deve ter no mínimo 6 caracteres</span>
         </div>
       </div>
-      
+
       <div class="form-options">
         <a routerLink="/auth/recuperar-senha" class="forgot-password">Esqueceu sua senha?</a>
       </div>
-      
+
       <button type="submit" class="btn btn-primary btn-block" [disabled]="loading">
         <span *ngIf="loading">Carregando...</span>
         <span *ngIf="!loading">Entrar</span>
       </button>
-      
+
       <div class="auth-separator">
         <span>ou</span>
       </div>
-    </form>
-    <div class="auth-footer">
-      <p>Ainda não tem uma conta? <a routerLink="/auth/cadastro">Cadastre-se</a></p>
+      </form>
+    <div class="auth-footer"> <p>Ainda não tem uma conta? <a routerLink="/auth/cadastro">Cadastre-se</a></p>
     </div>
   </div>
 </div>
+
+<app-footer></app-footer>

@@ -1,9 +1,20 @@
-/* footer.component.scss */
 footer {
   text-align: center;
-  padding: 2rem 0;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.6);
+  padding: 0.75rem 0; /* Voltando ao tamanho original da home */
+  font-size: 0.8rem; /* Fonte igual à da home */
+  color: rgba(255, 255, 255, 0.6); /* Cor igual à da home */
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-  margin-top: auto;
+  margin-top: auto; /* Importante para o sticky footer com flexbox */
+  width: 100%; /* Garante que o footer ocupe toda a largura */
+  flex-shrink: 0; /* Impede que o footer seja comprimido */
+  
+  .container {
+    p {
+      margin: 0.2rem 0; /* Margem pequena entre parágrafos */
+      
+      &:last-child {
+        margin-bottom: 0; /* Remove margem inferior do último parágrafo */
+      }
+    }
+  }
 }

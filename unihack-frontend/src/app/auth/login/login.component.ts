@@ -2,14 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { FooterComponent } from "../../shared/footer/footer.component";
+import { FooterComponent } from "../../shared/footer/footer.component"; // Importar FooterComponent
+import { NavbarComponent } from "../../shared/navbar/navbar.component"; // Importar NavbarComponent
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    NavbarComponent, // Adicionado NavbarComponent
+    FooterComponent  // Adicionado FooterComponent
+  ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss' // Corrigido para styleUrls se você tiver múltiplos, ou manter styleUrl
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
@@ -27,7 +34,6 @@ export class LoginComponent implements OnInit {
     });
   }
   
-  // Getter para acesso fácil aos campos do formulário
   get f() { return this.loginForm.controls; }
   
   togglePasswordVisibility(): void {
@@ -37,21 +43,15 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     
-    // Para o envio se o formulário for inválido
     if (this.loginForm.invalid) {
       return;
     }
     
     this.loading = true;
     
-    // Aqui você implementaria a lógica de autenticação
-    // Por exemplo, chamando um serviço de autenticação
-    
-    // Simulando um atraso de resposta do servidor
     setTimeout(() => {
       console.log('Login form submitted', this.loginForm.value);
       this.loading = false;
-      // Redirecionar após login bem-sucedido
       // this.router.navigate(['/dashboard']);
     }, 1500);
   }

@@ -1,5 +1,3 @@
-// src/app/pages/desafio-detalhe/desafio-detalhe.component.scss
-
 :host {
   display: block;
   padding-bottom: 4rem; // Espaço para o footer, ajuste conforme necessário
@@ -67,17 +65,7 @@
         text-decoration: underline;
       }
     }
-
-    // Se você usar [innerHTML] e quiser estilizar tags específicas dentro dele:
-    // Exemplo:
-    // code {
-    //   font-family: var(--font-family-monospace);
-    //   background-color: rgba(var(--primary-color-rgb), 0.1);
-    //   color: var(--primary-color);
-    //   padding: 0.2em 0.4em;
-    //   border-radius: 3px;
-    //   font-size: 0.9em;
-    // }
+    
   }
 }
 

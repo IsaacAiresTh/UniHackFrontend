@@ -1,11 +1,44 @@
-/* login.component.scss */
-
 :host {
   display: flex;
+  flex-direction: column;
+  min-height: 100vh; // Garante altura mínima da viewport
+  width: 100%;
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  flex: 1; // Ocupa o espaço disponível
   padding: 2rem 1rem;
+  width: 100%;
+  min-height: 0; // Permite que o container se ajuste ao conteúdo
+}
+
+.auth-card {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 450px;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h2 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+  }
 }
 
 .error-alert {
@@ -19,46 +52,17 @@
   text-align: center;
 }
 
-.auth-container {
-  width: 100%;
-  max-width: 450px;
-  margin: 0 auto;
-}
-
-.auth-card {
-  background-color: var(--card-bg);
-  border-radius: 8px;
-  padding: 2.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.auth-header {
-  text-align: center;
-  margin-bottom: 2rem;
-  
-  h2 {
-    font-size: 1.8rem;
-    color: var(--primary-color);
-    margin-bottom: 0.5rem;
-  }
-  
-  p {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.95rem;
-  }
-}
-
 form {
   .form-group {
     margin-bottom: 1.5rem;
-    
+
     label {
       display: block;
       margin-bottom: 0.5rem;
       font-size: 0.85rem;
       color: rgba(255, 255, 255, 0.9);
     }
-    
+
     input {
       width: 100%;
       padding: 0.75rem 1rem;
@@ -68,25 +72,25 @@ form {
       color: var(--text-color);
       font-size: 0.95rem;
       transition: border-color 0.3s ease;
-      
+
       &:focus {
         outline: none;
         border-color: var(--primary-color);
       }
-      
+
       &.invalid {
         border-color: #f44336;
       }
-      
+
       &::placeholder {
         color: rgba(255, 255, 255, 0.4);
       }
     }
   }
-  
+
   .password-field {
     position: relative;
-    
+
     .toggle-password {
       position: absolute;
       right: 0.75rem;
@@ -96,107 +100,75 @@ form {
       border: none;
       color: rgba(255, 255, 255, 0.6);
       cursor: pointer;
-      
+
       &:hover {
         color: var(--primary-color);
       }
-      
+
       .icon {
         font-size: 1.2rem;
       }
     }
   }
-  
+
   .error-message {
     color: #f44336;
     font-size: 0.8rem;
     margin-top: 0.5rem;
   }
-  
+
   .form-options {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-bottom: 1.5rem;
-    
-    .remember-me {
-      display: flex;
-      align-items: center;
-      
-      input[type="checkbox"] {
-        margin-right: 0.5rem;
-      }
-      
-      label {
-        font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.8);
-      }
-    }
-    
+
     .forgot-password {
       font-size: 0.85rem;
       color: var(--primary-color);
       text-decoration: none;
-      
+
       &:hover {
         text-decoration: underline;
       }
     }
   }
-  
+
   .btn-block {
     width: 100%;
     margin-bottom: 1rem;
     text-align: center;
     font-weight: 500;
-    
+
     &.btn-primary {
       background-color: var(--primary-color);
       color: black;
       padding: 0.75rem;
-      
+
       &:hover {
         background-color: var(--primary-hover);
       }
-      
+
       &:disabled {
         background-color: rgba(0, 230, 118, 0.5);
         cursor: not-allowed;
       }
     }
-    
-    &.social-login {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      background-color: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--text-color);
-      
-      &:hover {
-        border-color: var(--primary-color);
-      }
-      
-      .icon {
-        font-size: 1.2rem;
-      }
-    }
   }
-  
+
   .auth-separator {
     display: flex;
     align-items: center;
     text-align: center;
     margin: 1.5rem 0;
-    
+
     &::before,
     &::after {
       content: '';
       flex: 1;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
+
     span {
       padding: 0 10px;
       color: rgba(255, 255, 255, 0.5);
@@ -210,12 +182,12 @@ form {
   margin-top: 1.5rem;
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
-  
+
   a {
     color: var(--primary-color);
     text-decoration: none;
     font-weight: 500;
-    
+
     &:hover {
       text-decoration: underline;
     }

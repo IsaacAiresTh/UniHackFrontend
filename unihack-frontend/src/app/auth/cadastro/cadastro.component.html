@@ -1,17 +1,17 @@
 <app-navbar></app-navbar>
-<main class="cadastro-container">
-  <div class="cadastro-card">
-    <h2>Criar Conta</h2>
-    <p>Junte-se à comunidade UniHack!</p>
+
+<div class="auth-container"> <div class="auth-card">
+    <div class="auth-header">
+      <h2>Criar Conta</h2>
+      <p>Junte-se à comunidade UniHack!</p>
+    </div>
 
     <div *ngIf="isLoading" class="loading-indicator">
       Cadastrando... Por favor, aguarde.
     </div>
-
     <div *ngIf="successMessage && !isLoading" class="alert alert-success">
       {{ successMessage }}
     </div>
-
     <div *ngIf="errorMessage && !isLoading" class="alert alert-danger">
       {{ errorMessage }}
     </div>
@@ -49,9 +49,9 @@
       </button>
     </form>
 
-    <div class="alternative-action" *ngIf="!successMessage">
-      Já tem uma conta? <a routerLink="/auth/login">Faça Login</a>
+    <div class="auth-footer" *ngIf="!successMessage"> <p>Já tem uma conta? <a routerLink="/auth/login">Faça Login</a></p>
     </div>
   </div>
-</main>
+</div>
+
 <app-footer></app-footer>

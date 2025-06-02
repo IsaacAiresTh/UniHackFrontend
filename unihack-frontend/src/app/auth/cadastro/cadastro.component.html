@@ -1,6 +1,7 @@
 <app-navbar></app-navbar>
 
-<div class="auth-container"> <div class="auth-card">
+<div class="auth-container">
+  <div class="auth-card">
     <div class="auth-header">
       <h2>Criar Conta</h2>
       <p>Junte-se à comunidade UniHack!</p>
@@ -27,11 +28,11 @@
       </div>
 
       <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" formControlName="email" placeholder="seuemail@exemplo.com">
-        <div *ngIf="cadastroForm.get('email')?.invalid && (cadastroForm.get('email')?.dirty || cadastroForm.get('email')?.touched)" class="error-message">
-          <small *ngIf="cadastroForm.get('email')?.errors?.['required']">Email é obrigatório.</small>
-          <small *ngIf="cadastroForm.get('email')?.errors?.['email']">Formato de email inválido.</small>
+        <label for="matricula">Matrícula</label>
+        <input type="text" id="matricula" formControlName="matricula" placeholder="Sua matrícula">
+        <div *ngIf="cadastroForm.get('matricula')?.invalid && (cadastroForm.get('matricula')?.dirty || cadastroForm.get('matricula')?.touched)" class="error-message">
+          <small *ngIf="cadastroForm.get('matricula')?.errors?.['required']">Matrícula é obrigatória.</small>
+          <small *ngIf="cadastroForm.get('matricula')?.errors?.['pattern']">Matrícula deve conter apenas números (exemplo).</small>
         </div>
       </div>
 
@@ -44,12 +45,24 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label for="confirmacaoSenha">Confirmar Senha</label>
+        <input type="password" id="confirmacaoSenha" formControlName="confirmacaoSenha" placeholder="Confirme sua senha">
+        <div *ngIf="cadastroForm.get('confirmacaoSenha')?.invalid && (cadastroForm.get('confirmacaoSenha')?.dirty || cadastroForm.get('confirmacaoSenha')?.touched)" class="error-message">
+          <small *ngIf="cadastroForm.get('confirmacaoSenha')?.errors?.['required']">Confirmação de senha é obrigatória.</small>
+        </div>
+        <div *ngIf="cadastroForm.errors?.['passwordMismatch'] && (cadastroForm.get('confirmacaoSenha')?.touched || cadastroForm.get('senha')?.touched)" class="error-message">
+          <small>As senhas não coincidem.</small>
+        </div>
+      </div>
+
       <button type="submit" class="btn btn-primary btn-block" [disabled]="isLoading || cadastroForm.invalid">
         {{ isLoading ? 'Enviando...' : 'Cadastrar' }}
       </button>
     </form>
 
-    <div class="auth-footer" *ngIf="!successMessage"> <p>Já tem uma conta? <a routerLink="/auth/login">Faça Login</a></p>
+    <div class="auth-footer" *ngIf="!successMessage">
+      <p>Já tem uma conta? <a routerLink="/auth/login">Faça Login</a></p>
     </div>
   </div>
 </div>

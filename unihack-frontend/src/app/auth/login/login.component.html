@@ -1,7 +1,13 @@
-<app-navbar></app-navbar> <div class="auth-container"> <div class="auth-card">
+<app-navbar></app-navbar>
+<div class="auth-container">
+  <div class="auth-card">
     <div class="auth-header">
       <h2>Login</h2>
       <p>Entre na sua conta e comece a hackear</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -11,12 +17,11 @@
           type="text"
           id="matricula"
           formControlName="matricula"
-          placeholder="Sua matrícula de 7 números"
-          [ngClass]="{'invalid': submitted && f['matricula'].errors}"
+          placeholder="Sua matrícula" [ngClass]="{'invalid': loginForm.get('matricula')?.invalid && (loginForm.get('matricula')?.dirty || loginForm.get('matricula')?.touched)}"
         >
-        <div class="error-message" *ngIf="submitted && f['matricula'].errors">
-          <span *ngIf="f['matricula'].errors['required']">Matrícula é obrigatória</span>
-          <span *ngIf="f['matricula'].errors['pattern']">A matrícula deve conter exatamente 7 números</span>
+        <div class="error-message" *ngIf="loginForm.get('matricula')?.invalid && (loginForm.get('matricula')?.dirty || loginForm.get('matricula')?.touched)">
+          <span *ngIf="loginForm.get('matricula')?.errors?.['required']">Matrícula é obrigatória.</span>
+          <span *ngIf="loginForm.get('matricula')?.errors?.['pattern']">A matrícula deve conter apenas números (exemplo).</span>
         </div>
       </div>
 
@@ -26,17 +31,16 @@
           <input
             [type]="hidePassword ? 'password' : 'text'"
             id="password"
-            formControlName="password"
-            placeholder="Sua senha"
-            [ngClass]="{'invalid': submitted && f['password'].errors}"
+            formControlName="senha" placeholder="Sua senha"
+            [ngClass]="{'invalid': loginForm.get('senha')?.invalid && (loginForm.get('senha')?.dirty || loginForm.get('senha')?.touched)}"
           >
           <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
             <i class="icon material-icons">{{ hidePassword ? 'visibility_off' : 'visibility' }}</i>
           </button>
         </div>
-        <div class="error-message" *ngIf="submitted && f['password'].errors">
-          <span *ngIf="f['password'].errors['required']">Senha é obrigatória</span>
-          <span *ngIf="f['password'].errors['minlength']">Senha deve ter no mínimo 6 caracteres</span>
+        <div class="error-message" *ngIf="loginForm.get('senha')?.invalid && (loginForm.get('senha')?.dirty || loginForm.get('senha')?.touched)">
+          <span *ngIf="loginForm.get('senha')?.errors?.['required']">Senha é obrigatória.</span>
+          <span *ngIf="loginForm.get('senha')?.errors?.['minlength']">Senha deve ter no mínimo 6 caracteres.</span>
         </div>
       </div>
 
@@ -44,16 +48,15 @@
         <a routerLink="/auth/recuperar-senha" class="forgot-password">Esqueceu sua senha?</a>
       </div>
 
-      <button type="submit" class="btn btn-primary btn-block" [disabled]="loading">
-        <span *ngIf="loading">Carregando...</span>
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="loginForm.invalid || loading"> <span *ngIf="loading">Carregando...</span>
         <span *ngIf="!loading">Entrar</span>
       </button>
 
       <div class="auth-separator">
         <span>ou</span>
       </div>
-      </form>
-    <div class="auth-footer"> <p>Ainda não tem uma conta? <a routerLink="/auth/cadastro">Cadastre-se</a></p>
+    </form> <div class="auth-footer">
+      <p>Ainda não tem uma conta? <a routerLink="/auth/cadastro">Cadastre-se</a></p>
     </div>
   </div>
 </div>

@@ -1,58 +1,59 @@
-// src/app/core/auth.service.ts
+// src/app/auth/auth.service.ts
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http'; // Importe HttpClient e HttpHeaders
-import { Observable, BehaviorSubject, tap } from 'rxjs';
-// Defina interfaces para os dados de payload e resposta, se desejar
-// import { User, AuthResponse, RegisterPayload } from '../models/auth.model'; // Crie este arquivo se necessário
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment'; // Certifique-se que o caminho está correto
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // ATENÇÃO: Mova esta URL para os arquivos de environment (environment.ts e environment.development.ts)
-  private apiUrl = 'http://localhost:8080/api/auth'; // Exemplo de URL base do seu backend. AJUSTE CONFORME NECESSÁRIO!
+  private apiUrl = environment.apiUrl; // Usando a variável de ambiente
+  private tokenKey = 'authToken';
 
-  private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
-  isLoggedIn$ = this.loggedIn.asObservable();
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { } // Injete HttpClient
-
-  private hasToken(): boolean {
-    return !!localStorage.getItem('authToken');
+  // ****** ALTERAÇÃO APLICADA AQUI ******
+  // O método agora espera um único objeto userData com os campos corretos para o backend.
+  register(userData: { name: string; matricula: string; password: string; confirmPassword: string; }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/register`, userData)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  // Exemplo de método de login (você pode já ter algo similar)
-  login(credentials: any): Observable<any> { // Substitua 'any' por uma interface de resposta apropriada
-    return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
-      tap(response => {
-        if (response && response.token) { // Assumindo que o backend retorna um token
-          localStorage.setItem('authToken', response.token);
-          this.loggedIn.next(true);
-        }
-      })
-    );
+  login(matricula: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/login`, { matricula,  password})
+      .pipe(
+        tap(response => {
+          if (response && response.token) {
+            this.saveToken(response.token);
+          }
+        }),
+        catchError(this.handleError)
+      );
   }
 
-  // NOVO MÉTODO DE REGISTRO
-  register(userData: any): Observable<any> { // Substitua 'any' por interfaces de payload e resposta
-    // Exemplo de endpoint: /api/auth/register ou /api/usuarios
-    // userData deve ser um objeto com os campos esperados pelo seu backend
-    // (ex: nome, email, senha)
-    return this.http.post<any>(`${this.apiUrl}/register`, userData, { // AJUSTE O ENDPOINT '/register' SE NECESSÁRIO
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    });
-  }
-
-  logout(): void {
-    localStorage.removeItem('authToken');
-    this.loggedIn.next(false);
-    // Aqui você pode querer redirecionar para a página de login
-    // this.router.navigate(['/auth/login']);
+  saveToken(token: string): void {
+    localStorage.setItem(this.tokenKey, token);
   }
 
   getToken(): string | null {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  logout(): void {
+    localStorage.removeItem(this.tokenKey);
+    // Adicionar qualquer outra lógica de limpeza ou redirecionamento aqui
+  }
+
+  private handleError(error: any): Observable<never> {
+    console.error('Ocorreu um erro!', error); // Este é o log que você está vendo no console do navegador
+    return throwError(() => new Error(error.error?.message || error.message || 'Erro desconhecido do servidor'));
   }
 }

@@ -5,20 +5,7 @@ import { RouterModule } from '@angular/router'; // Para routerLink
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
 import { FormsModule } from '@angular/forms';
-// No futuro, você pode ter um serviço para buscar esses desafios
-// import { DesafiosService } from './desafios.service';
-
-// Interface para os itens da lista de desafios
-export interface DesafioInfo {
-  id: string; // Identificador único para a rota (ex: 'sql-injection-basico')
-  titulo: string;
-  descricaoCurta: string;
-  categoria: string;
-  pontuacao: number;
-  nivelDificuldade: 'Fácil' | 'Médio' | 'Difícil' | 'Insano';
-  tags?: string[];
-  isCompleto?: boolean; // Opcional: para marcar desafios já feitos pelo usuário
-}
+import { ApiService, Desafio } from '../../core/api.service'; // IMPORTAMOS O SERVIÇO E O MODELO CORRETO
 
 @Component({
   selector: 'app-desafios',
@@ -26,90 +13,65 @@ export interface DesafioInfo {
   imports: [CommonModule, RouterModule, NavbarComponent, FooterComponent, FormsModule],
   templateUrl: './desafios.component.html',
   styleUrls: ['./desafios.component.scss']
-  // providers: [DesafiosService] // Se você criar um serviço
 })
 export class DesafiosComponent implements OnInit {
 
-  listaDeDesafios: DesafioInfo[] = [];
-  categorias: string[] = [];
+  // Usa o modelo de dados 'Desafio' vindo da API
+  listaDeDesafios: Desafio[] = [];
+  private todosOsDesafios: Desafio[] = []; // Array para guardar a lista original antes de filtrar
+
+  // A lógica de categorias e filtros permanece
+  categorias: string[] = ['Todas']; // Começa com 'Todas', o resto será preenchido pela API se necessário
   filtroCategoriaSelecionada: string = 'Todas';
   filtroBusca: string = '';
+  isLoading: boolean = true;
+  errorMessage: string | null = null;
 
-  // Dados mockados para os desafios. Substitua por dados de um serviço/backend.
-  private todosOsDesafios: DesafioInfo[] = [
-    {
-      id: 'sql-injection-1',
-      titulo: 'SQL Injection Básico',
-      descricaoCurta: 'Aprenda os fundamentos da injeção de SQL e explore um login vulnerável.',
-      categoria: 'Web',
-      pontuacao: 100,
-      nivelDificuldade: 'Fácil',
-      tags: ['SQL', 'Injeção', 'Autenticação'],
-      isCompleto: false,
-    },
-    {
-      id: 'xss-basico-1',
-      titulo: 'XSS Refletido Simples',
-      descricaoCurta: 'Entenda como o XSS refletido funciona injetando scripts em um campo de busca.',
-      categoria: 'Web',
-      pontuacao: 150,
-      nivelDificuldade: 'Fácil',
-      tags: ['XSS', 'JavaScript', 'Frontend'],
-      isCompleto: true, // Exemplo de desafio completo
-    },
-    {
-      id: 'cripto-cesar-1',
-      titulo: 'Cifra de César',
-      descricaoCurta: 'Decifre uma mensagem criptografada com a clássica Cifra de César.',
-      categoria: 'Criptografia',
-      pontuacao: 50,
-      nivelDificuldade: 'Fácil',
-      tags: ['Cripto Clássica', 'Substituição'],
-    },
-    {
-      id: 'engenharia-social-1',
-      titulo: 'Phishing Elementar',
-      descricaoCurta: 'Analise um e-mail e identifique sinais de uma tentativa de phishing.',
-      categoria: 'Engenharia Social',
-      pontuacao: 200,
-      nivelDificuldade: 'Médio',
-      tags: ['Phishing', 'Análise'],
-    },
-    {
-      id: 'forense-imagem-1',
-      titulo: 'Esteganografia em Imagem',
-      descricaoCurta: 'Encontre a mensagem escondida dentro de uma imagem aparentemente normal.',
-      categoria: 'Forense',
-      pontuacao: 250,
-      nivelDificuldade: 'Médio',
-      tags: ['Esteganografia', 'Imagem', 'Metadados'],
-    }
-  ];
-
-  constructor(/* private desafiosService: DesafiosService */) { }
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
-    // this.desafiosService.getDesafios().subscribe(dados => this.listaDeDesafios = dados);
-    this.listaDeDesafios = [...this.todosOsDesafios]; // Cópia para permitir filtragem
-    this.categorias = ['Todas', ...new Set(this.todosOsDesafios.map(d => d.categoria))]; // Extrai categorias únicas
-    this.aplicarFiltros();
+    this.carregarDesafios();
+  }
+
+  carregarDesafios(): void {
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    // Chamada real ao serviço da API para buscar os desafios
+    this.apiService.getAllChallenges().subscribe({
+      next: (data) => {
+        this.todosOsDesafios = data;
+        // Mapeia os dados do backend para a estrutura esperada pelo seu template
+        // NOTA: O ideal é ajustar o HTML para usar os nomes do backend (title, score, etc.)
+        this.aplicarFiltros();
+        this.isLoading = false;
+
+        // Extrai categorias unicas, se o modelo do backend tiver um campo 'categoria'
+        // Ex: this.categorias = ['Todas', ...new Set(this.todosOsDesafios.map(d => d.categoria))];
+      },
+      error: (err) => {
+        console.error("Falha ao buscar desafios do backend:", err);
+        this.errorMessage = "Não foi possível carregar os desafios. Verifique a conexão com o servidor e tente novamente.";
+        this.isLoading = false;
+      }
+    });
   }
 
   aplicarFiltros(): void {
     let desafiosFiltrados = this.todosOsDesafios;
 
-    // Filtro por categoria
-    if (this.filtroCategoriaSelecionada !== 'Todas') {
-      desafiosFiltrados = desafiosFiltrados.filter(d => d.categoria === this.filtroCategoriaSelecionada);
-    }
+    // Filtro por categoria (só funcionará se o seu modelo 'Desafio' tiver um campo 'categoria')
+    // if (this.filtroCategoriaSelecionada !== 'Todas') {
+    //   desafiosFiltrados = desafiosFiltrados.filter(d => d.categoria === this.filtroCategoriaSelecionada);
+    // }
 
-    // Filtro por busca (título ou descrição)
+    // Filtro por busca (agora usando os campos 'title' e 'description' do backend)
     if (this.filtroBusca.trim() !== '') {
       const termoBuscaLower = this.filtroBusca.toLowerCase();
       desafiosFiltrados = desafiosFiltrados.filter(d =>
-        d.titulo.toLowerCase().includes(termoBuscaLower) ||
-        d.descricaoCurta.toLowerCase().includes(termoBuscaLower) ||
-        (d.tags && d.tags.some(tag => tag.toLowerCase().includes(termoBuscaLower)))
+        d.title.toLowerCase().includes(termoBuscaLower) ||
+        d.description.toLowerCase().includes(termoBuscaLower)
+        // || (d.tags && d.tags.some(tag => tag.toLowerCase().includes(termoBuscaLower))) // Se tiver tags
       );
     }
     this.listaDeDesafios = desafiosFiltrados;

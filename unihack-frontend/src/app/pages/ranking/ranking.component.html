@@ -6,7 +6,10 @@
     <p>Veja os melhores hackers da faculdade!</p>
   </div>
 
-  <div class="ranking-table-wrapper">
+  <div *ngIf="isLoading" class="loading-message">Carregando ranking...</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <div *ngIf="!isLoading && !errorMessage" class="ranking-table-wrapper">
     <table class="ranking-table">
       <thead>
         <tr>
@@ -14,23 +17,21 @@
           <th>Avatar</th>
           <th>Nome</th>
           <th>Pontuação</th>
-          <th>Desafios Completos</th>
-        </tr>
+          </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of rankingData" [ngClass]="{'top-three': user.posicao <= 3, 'current-user': user.nome === 'SeuNomeDeUsuario'}">
+        <tr *ngFor="let user of rankingData; let i = index">
           <td class="position">
-            <span class="rank-badge rank-{{user.posicao}}">{{ user.posicao }}</span>
+            <span class="rank-badge rank-{{i + 1}}">{{ i + 1 }}</span>
           </td>
           <td class="avatar">
-            <img [src]="user.avatarUrl || 'assets/avatars/default.png'" alt="Avatar de {{ user.nome }}">
+            <img [src]="'assets/avatars/default.png'" alt="Avatar de {{ user.username }}">
           </td>
-          <td class="name">{{ user.nome }}</td>
-          <td class="score">{{ user.pontuacao }} XP</td>
-          <td class="challenges">{{ user.desafiosCompletos }}</td>
-        </tr>
+          <td class="name">{{ user.username }}</td>
+          <td class="score">{{ user.points }} XP</td>
+          </tr>
         <tr *ngIf="rankingData.length === 0">
-          <td colspan="5" class="no-data">O ranking ainda está vazio. Comece a hackear!</td>
+          <td colspan="4" class="no-data">O ranking ainda está vazio. Comece a hackear!</td>
         </tr>
       </tbody>
     </table>

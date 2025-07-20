@@ -1,34 +1,44 @@
 // desafio-detalhe.component.ts
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router'; // RouterModule para routerLink
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // << IMPORTANTE: Para usar o ngModel
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
-// Crie um serviço para gerenciar os dados dos desafios
-import { DesafioService, DetalhesDesafio } from './desafio.service'; // Exemplo de serviço
+// Importa os modelos e serviços corretos da API
+import { ApiService, Desafio, ActiveChallengeSession } from '../../core/api.service';
 
 @Component({
   selector: 'app-desafio-detalhe',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavbarComponent, FooterComponent],
+  // Adiciona o FormsModule aqui
+  imports: [CommonModule, RouterModule, FormsModule, NavbarComponent, FooterComponent],
   templateUrl: './desafio-detalhe.component.html',
   styleUrls: ['./desafio-detalhe.component.scss'],
-  providers: [DesafioService] // Adicione o serviço se ele for específico deste componente ou forneça no root
+  // O ApiService já é 'providedIn: root', então não precisa estar aqui
 })
 export class DesafioDetalheComponent implements OnInit {
-  desafio: DetalhesDesafio | undefined;
+  // USA O MODELO 'Desafio' REAL, não o antigo 'DetalhesDesafio'
+  desafio: Desafio | undefined;
+
+  // DECLARA AS PROPRIEDADES QUE ESTAVAM FALTANDO
+  activeChallengeSession: ActiveChallengeSession | null = null;
+  isStarting: boolean = false;
+  flag: string = '';
+
   isLoading: boolean = true;
   errorMessage: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
-    private desafioService: DesafioService
+    private apiService: ApiService // Usa o serviço de API real
   ) {}
 
   ngOnInit(): void {
     const desafioId = this.route.snapshot.paramMap.get('id');
     if (desafioId) {
-      this.desafioService.getDetalhesDesafio(desafioId).subscribe({
+      // Chama o método correto do serviço de API
+      this.apiService.getChallengeDetails(desafioId).subscribe({
         next: (data) => {
           this.desafio = data;
           this.isLoading = false;
@@ -36,7 +46,6 @@ export class DesafioDetalheComponent implements OnInit {
         error: (err) => {
           this.errorMessage = `Erro ao carregar o desafio: ${err.message}`;
           this.isLoading = false;
-          console.error(err);
         }
       });
     } else {
@@ -46,12 +55,41 @@ export class DesafioDetalheComponent implements OnInit {
   }
 
   iniciarDesafioReal(): void {
-    // Lógica para quando o usuário clicar em "Começar o desafio de verdade"
-    // Isso pode envolver redirecionar para outra rota, abrir um modal,
-    // ou carregar uma parte específica da interface do desafio real.
     if (this.desafio) {
-      console.log(`Iniciando desafio real: ${this.desafio.titulo}`);
-      // Exemplo: router.navigate(['/ambiente-desafio', this.desafio.id]);
+      this.isStarting = true;
+      this.errorMessage = null;
+
+      this.apiService.startChallenge(this.desafio.id).subscribe({
+        next: (session) => {
+          this.activeChallengeSession = session;
+          this.isStarting = false;
+        },
+        error: (err) => {
+          this.errorMessage = "Falha ao iniciar o ambiente do desafio. Tente novamente.";
+          this.isStarting = false;
+        }
+      });
     }
+  }
+
+  // DECLARA O MÉTODO QUE ESTAVA FALTANDO
+  onSubmitFlag(): void {
+    if (!this.activeChallengeSession || !this.flag) {
+      this.errorMessage = "Por favor, insira uma flag para validar.";
+      return;
+    }
+    this.errorMessage = null;
+    // Lógica para chamar a API e submeter a flag
+    this.apiService.submitFlag(this.activeChallengeSession.containerId, this.flag).subscribe({
+        next: (response) => {
+            alert(response.message || "Flag correta! Desafio finalizado.");
+            // Resetar a interface
+            this.activeChallengeSession = null;
+            this.flag = '';
+        },
+        error: (err) => {
+            this.errorMessage = err.error.message || "Flag incorreta ou erro no servidor.";
+        }
+    });
   }
 }

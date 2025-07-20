@@ -3,16 +3,33 @@
   <div *ngIf="isLoading" class="loading-message">Carregando desafio...</div>
   <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 
-  <div *ngIf="desafio && !isLoading && !errorMessage">
+  <div *ngIf="desafio && !isLoading">
     <header class="desafio-header">
-      <h1>{{ desafio.titulo }}</h1>
-    </header>
-    <section class="desafio-conteudo">
+      <h1>{{ desafio.title }}</h1> </header>
+
+    <section *ngIf="!activeChallengeSession" class="desafio-conteudo">
       <h2>Sobre a Vulnerabilidade</h2>
-      <p [innerHTML]="desafio.explicacaoVulnerabilidade"></p> <div class="desafio-actions">
-        <button (click)="iniciarDesafioReal()" class="btn btn-primary">Começar o Desafio de Verdade</button>
+      <p [innerHTML]="desafio.description"></p> <div class="desafio-actions">
+        <button (click)="iniciarDesafioReal()" class="btn btn-primary" [disabled]="isStarting">
+          <span *ngIf="!isStarting">Começar o Desafio de Verdade</span>
+          <span *ngIf="isStarting">Iniciando ambiente...</span>
+        </button>
         <button routerLink="/desafios" class="btn btn-secondary">Voltar para Lista de Desafios</button>
       </div>
+    </section>
+
+    <section *ngIf="activeChallengeSession" class="desafio-ativo">
+        <h2>Ambiente Pronto!</h2>
+        <p>Seu ambiente de desafio está rodando. Acesse pelo link abaixo para encontrar a flag:</p>
+        <div class="link-desafio">
+            <a [href]="activeChallengeSession.accessUrl" target="_blank">{{ activeChallengeSession.accessUrl }}</a>
+        </div>
+
+        <div class="flag-submission">
+            <h3>Submeter Flag</h3>
+            <input type="text" placeholder="Cole a flag aqui: UNIHACK{...}" [(ngModel)]="flag" />
+            <button (click)="onSubmitFlag()" class="btn btn-success">Validar Flag</button>
+        </div>
     </section>
   </div>
 </div>

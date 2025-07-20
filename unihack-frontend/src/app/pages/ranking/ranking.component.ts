@@ -1,58 +1,53 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router'; // <<< ADICIONAR ESTA LINHA
+import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
-
-// Interface para tipar os dados do usuário no ranking
-interface RankingUser {
-  posicao: number;
-  nome: string;
-  pontuacao: number;
-  desafiosCompletos: number;
-  avatarUrl?: string; // Opcional: URL para o avatar do usuário
-}
+// Importa o serviço de API e o modelo de usuário do ranking
+import { ApiService, RankingUser } from '../../core/api.service';
 
 @Component({
   selector: 'app-ranking',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule, // <<< ADICIONAR RouterModule AQUI
+    RouterModule,
     NavbarComponent,
     FooterComponent
   ],
   templateUrl: './ranking.component.html',
-  styleUrls: ['./ranking.component.scss'] // Mantido como styleUrls, que é comum
+  styleUrls: ['./ranking.component.scss']
 })
 export class RankingComponent implements OnInit {
 
-  // Dados de exemplo para o ranking
-  rankingData: RankingUser[] = [
-    { posicao: 1, nome: 'CyberNinja', pontuacao: 1500, desafiosCompletos: 10, avatarUrl: 'assets/avatars/ninja.png' },
-    { posicao: 2, nome: 'BinaryBard', pontuacao: 1450, desafiosCompletos: 9, avatarUrl: 'assets/avatars/bard.png' },
-    { posicao: 3, nome: 'KernelKing', pontuacao: 1300, desafiosCompletos: 8, avatarUrl: 'assets/avatars/king.png' },
-    { posicao: 4, nome: 'RootRider', pontuacao: 1250, desafiosCompletos: 8 },
-    { posicao: 5, nome: 'ScriptSorcerer', pontuacao: 1100, desafiosCompletos: 7 },
-    { posicao: 6, nome: 'DataDragon', pontuacao: 1050, desafiosCompletos: 7, avatarUrl: 'assets/avatars/dragon.png' },
-    { posicao: 7, nome: 'FirewallPhoenix', pontuacao: 980, desafiosCompletos: 6 },
-    { posicao: 8, nome: 'LogicLancer', pontuacao: 920, desafiosCompletos: 6 },
-    { posicao: 9, nome: 'PacketPaladin', pontuacao: 850, desafiosCompletos: 5 },
-    { posicao: 10, nome: 'ZeroDayZephyr', pontuacao: 800, desafiosCompletos: 5 }
-  ];
+  // A lista de usuários do ranking agora usará o tipo da API e começará vazia
+  rankingData: RankingUser[] = [];
+  isLoading: boolean = true;
+  errorMessage: string | null = null;
 
-  constructor() { }
+  // Injete o ApiService
+  constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
-    // Aqui você pode adicionar lógica para buscar dados do ranking de um serviço
-    // Por exemplo: this.loadRankingData();
+    // Chama o método para buscar os dados reais quando o componente for iniciado
+    this.loadRankingData();
   }
 
-  // Método de exemplo para carregar dados de um backend (simulado)
-  // loadRankingData(): void {
-  //   // Chamar um serviço que faz uma requisição HTTP para /api/ranking
-  //   // this.rankingService.getRanking().subscribe(data => {
-  //   //   this.rankingData = data;
-  //   // });
-  // }
+  // Método que busca os dados do backend
+  loadRankingData(): void {
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    this.apiService.getRanking().subscribe({
+      next: (data) => {
+        this.rankingData = data; // Armazena os dados recebidos
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error("Erro ao buscar o ranking:", err);
+        this.errorMessage = "Não foi possível carregar o ranking. Tente novamente mais tarde.";
+        this.isLoading = false;
+      }
+    });
+  }
 }

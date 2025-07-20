@@ -7,54 +7,26 @@
   </header>
 
   <div class="filtros-desafios">
-    <div class="filtro-busca">
-      <input
-        type="text"
-        placeholder="Buscar por título, descrição ou tag..."
-        [(ngModel)]="filtroBusca"
-        (ngModelChange)="aplicarFiltros()"
-        aria-label="Buscar desafios"
-      />
-      <button *ngIf="filtroBusca" (click)="limparBusca()" class="btn-limpar-busca" aria-label="Limpar busca">&times;</button>
     </div>
-    <div class="filtro-categorias">
-      <span class="label-filtro">Categoria:</span>
-      <button
-        *ngFor="let categoria of categorias"
-        class="btn-categoria"
-        [class.active]="categoria === filtroCategoriaSelecionada"
-        (click)="selecionarCategoria(categoria)">
-        {{ categoria }}
-      </button>
-    </div>
-  </div>
 
-  <div class="lista-desafios-grid" *ngIf="listaDeDesafios.length > 0; else semDesafios">
-    <div class="card-desafio" *ngFor="let desafio of listaDeDesafios" [ngClass]="{'desafio-completo': desafio.isCompleto}">
+  <div *ngIf="isLoading" class="loading-message">Carregando desafios...</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <div class="lista-desafios-grid" *ngIf="!isLoading && listaDeDesafios.length > 0; else semDesafios">
+    <div class="card-desafio" *ngFor="let desafio of listaDeDesafios">
       <div class="card-desafio-header">
-        <span class="categoria-tag">{{ desafio.categoria }}</span>
-        <span class="pontuacao-tag">{{ desafio.pontuacao }} XP</span>
-      </div>
-      <h3 class="titulo-desafio">{{ desafio.titulo }}</h3>
-      <p class="descricao-desafio">{{ desafio.descricaoCurta }}</p>
-      <div class="tags-desafio" *ngIf="desafio.tags && desafio.tags.length > 0">
-        <span *ngFor="let tag of desafio.tags" class="tag">{{ tag }}</span>
-      </div>
-      <div class="card-desafio-footer">
-        <span class="nivel-dificuldade" [ngClass]="'nivel-' + desafio.nivelDificuldade.toLowerCase()">
-          {{ desafio.nivelDificuldade }}
-        </span>
+        <span class="pontuacao-tag">{{ desafio.score }} XP</span> </div>
+      <h3 class="titulo-desafio">{{ desafio.title }}</h3> <p class="descricao-desafio">{{ desafio.description }}</p> <div class="card-desafio-footer">
+        <span class="nivel-dificuldade" [ngClass]="'nivel-' + desafio.difficulty.toLowerCase()"> {{ desafio.difficulty }} </span>
         <button class="btn btn-primary btn-comecar" [routerLink]="['/desafios', desafio.id]">
-          <span *ngIf="!desafio.isCompleto">Começar Desafio</span>
-          <span *ngIf="desafio.isCompleto">Ver Detalhes</span>
-          <i *ngIf="desafio.isCompleto" class="fas fa-check-circle desafio-completo-icon"></i>
+            <span>Começar Desafio</span>
         </button>
       </div>
     </div>
   </div>
 
   <ng-template #semDesafios>
-    <div class="sem-desafios-mensagem">
+    <div *ngIf="!isLoading && !errorMessage" class="sem-desafios-mensagem">
       <p>Nenhum desafio encontrado com os filtros atuais. Tente ajustar sua busca ou categoria!</p>
       <img src="assets/images/no-results.svg" alt="Nenhum resultado encontrado" class="no-results-img"/>
     </div>

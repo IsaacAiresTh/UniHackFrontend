@@ -1,6 +1,9 @@
+// unihack-frontend/src/app/shared/navbar/navbar.component.ts
+
 import { Component, HostListener } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../auth/auth.service'; // 1. IMPORTAR o AuthService
 
 @Component({
   selector: 'app-navbar',
@@ -12,21 +15,30 @@ import { CommonModule } from '@angular/common';
 export class NavbarComponent {
   isVisible = true;
   lastScrollPosition = 0;
-  scrollThreshold = 50; // Quantidade mínima de scroll para ocultar/mostrar a navbar
+  scrollThreshold = 50;
+
+  // 2. INJETAR o AuthService
+  constructor(private authService: AuthService) {}
+
+  // 3. CRIAR um "getter" para verificar o status do login
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  // 4. CRIAR a função de logout para ser chamada pelo botão
+  logout(): void {
+    this.authService.logout();
+    // O redirecionamento já é feito dentro do authService
+  }
 
   @HostListener('window:scroll', [])
   onWindowScroll() {
     const currentScrollPosition = window.scrollY;
-    
-    // Determina se deve mostrar ou esconder a navbar baseado na direção do scroll
     if (currentScrollPosition > this.lastScrollPosition && currentScrollPosition > this.scrollThreshold) {
-      // Scrollando para baixo - esconde a navbar
       this.isVisible = false;
     } else {
-      // Scrollando para cima ou no topo - mostra a navbar
       this.isVisible = true;
     }
-    
     this.lastScrollPosition = currentScrollPosition;
   }
 }

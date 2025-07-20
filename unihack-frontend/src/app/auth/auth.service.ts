@@ -4,6 +4,8 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment'; // Certifique-se que o caminho está correto
+import { Router } from '@angular/router';
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,8 @@ export class AuthService {
   private apiUrl = environment.apiUrl; // Usando a variável de ambiente
   private tokenKey = 'authToken';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) { }
+
 
   // ****** ALTERAÇÃO APLICADA AQUI ******
   // O método agora espera um único objeto userData com os campos corretos para o backend.
@@ -44,12 +47,15 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    // Verifica se o token existe no localStorage
+    return !!localStorage.getItem('authToken');
   }
 
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
-    // Adicionar qualquer outra lógica de limpeza ou redirecionamento aqui
+    // Remove o token do localStorage
+    localStorage.removeItem('authToken');
+    // Opcional: Redireciona o usuário para a página de login ou inicial
+    this.router.navigate(['/login']);
   }
 
   private handleError(error: any): Observable<never> {

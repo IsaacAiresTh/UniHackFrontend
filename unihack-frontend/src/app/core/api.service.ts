@@ -53,15 +53,11 @@ export class ApiService {
     return this.http.post<ActiveChallengeSession>(`${API_BASE_URL}/challenges/${id}/start`, {});
   }
 
-  // 4. Pede para o backend parar um desafio (e validar a flag)
-  // (Este é o próximo passo, mas já vamos deixar o método pronto)
-  submitFlag(containerId: string, flag: string): Observable<any> {
-    const payload = { containerId, flag };
-    return this.http.post(`${API_BASE_URL}/challenges/submit`, payload);
-  }
-
   getRanking(): Observable<RankingUser[]> {
   return this.http.get<RankingUser[]>(`${API_BASE_URL}/users/ranking`);
-}
+  }
 
+  submitFlag(containerId: string, flag: string): Observable<any> {
+    return this.http.post(`${API_BASE_URL}/challenges/submit`, { containerId, flag });
+  }
 }

@@ -72,23 +72,31 @@ export class DesafioDetalheComponent implements OnInit {
     }
   }
 
-  // DECLARA O MÉTODO QUE ESTAVA FALTANDO
   onSubmitFlag(): void {
-    if (!this.activeChallengeSession || !this.flag) {
+    if (!this.activeChallengeSession) {
+        this.errorMessage = "Nenhuma sessão de desafio ativa.";
+        return;
+    }
+    if (!this.flag) {
       this.errorMessage = "Por favor, insira uma flag para validar.";
       return;
     }
     this.errorMessage = null;
-    // Lógica para chamar a API e submeter a flag
+
+    // Chama o método do serviço de API, passando o ID do contentor e a flag
     this.apiService.submitFlag(this.activeChallengeSession.containerId, this.flag).subscribe({
         next: (response) => {
             alert(response.message || "Flag correta! Desafio finalizado.");
-            // Resetar a interface
+            // Opcional: Redirecionar o utilizador de volta para a lista de desafios após o sucesso
+            // import { Router } from '@angular/router';
+            // constructor(private router: Router) {}
+            // this.router.navigate(['/desafios']);
             this.activeChallengeSession = null;
             this.flag = '';
         },
         error: (err) => {
-            this.errorMessage = err.error.message || "Flag incorreta ou erro no servidor.";
+            // O backend envia uma mensagem de erro, vamos mostrá-la
+            this.errorMessage = err.error?.message || "Flag incorreta ou erro no servidor.";
         }
     });
   }

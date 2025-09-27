@@ -62,4 +62,19 @@ export class AuthService {
     console.error('Ocorreu um erro!', error); // Este é o log que você está vendo no console do navegador
     return throwError(() => new Error(error.error?.message || error.message || 'Erro desconhecido do servidor'));
   }
+
+  getMatriculaFromToken(): string | null {
+    const token = this.getToken();
+    if (token) {
+      try {
+        // Decodifica o payload do token
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.sub; // 'sub' geralmente contém o ID ou username (neste caso, a matrícula)
+      } catch (e) {
+        console.error("Erro ao decodificar o token:", e);
+        return null;
+      }
+    }
+    return null;
+  }
 }

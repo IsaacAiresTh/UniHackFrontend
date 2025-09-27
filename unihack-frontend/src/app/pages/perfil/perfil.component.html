@@ -1,1 +1,32 @@
-<p>perfil works!</p>
+<app-navbar></app-navbar>
+
+<div class="perfil-container">
+  <div *ngIf="isLoading" class="loading-message">Carregando perfil...</div>
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <div *ngIf="userProfile && !isLoading" class="perfil-card">
+    <div class="perfil-header">
+      <img [src]="'assets/avatars/default.png'" alt="Avatar de {{ userProfile.username }}" class="avatar">
+      <h1>{{ userProfile.username }}</h1>
+      <p class="matricula">Matrícula: {{ userProfile.matricula }}</p>
+      <span class="role-tag">{{ userProfile.role }}</span>
+    </div>
+
+    <div class="perfil-stats">
+      <div class="stat-item">
+        <span class="stat-value">{{ userProfile.points }}</span>
+        <span class="stat-label">Pontos</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">0</span>
+        <span class="stat-label">Desafios Concluídos</span>
+      </div>
+    </div>
+
+    <div class="perfil-actions">
+      <button class="btn btn-primary" routerLink="/desafios">Ver Desafios</button>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

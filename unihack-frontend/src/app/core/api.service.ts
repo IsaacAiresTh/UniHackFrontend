@@ -60,4 +60,11 @@ export class ApiService {
   submitFlag(containerId: string, flag: string): Observable<any> {
     return this.http.post(`${API_BASE_URL}/challenges/submit`, { containerId, flag });
   }
+
+  // 4. (NOVO) Pede para o backend verificar o status de um desafio para o usuário atual
+  getChallengeStatus(id: string): Observable<{ isSolved: boolean }> {
+  // NOTE: O endpoint no seu backend seria algo como /challenges/{id}/status
+  // Ele deve retornar um JSON como { "isSolved": true } ou { "isSolved": false }
+    return this.http.get<{ isSolved: boolean }>(`${API_BASE_URL}/challenges/${id}/status`);
+  }
 }

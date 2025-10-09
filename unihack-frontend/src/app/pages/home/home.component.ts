@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
+import { AuthService } from '../../core/auth.service';
+
 
 @Component({
   selector: 'app-home',
@@ -25,10 +27,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   private fontSize: number = 12;
   private fontLoaded: boolean = false;
 
+  // 3. INJETAR AuthService e Router
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
   ngOnInit(): void {
-    // Carregar a fonte antes de inicializar o efeito Matrix
     this.loadCustomFont().then(() => {
-      // Inicializar canvas após a fonte ser carregada
       setTimeout(() => {
         this.initMatrixEffect();
       }, 100);
@@ -36,22 +42,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Limpar interval quando o componente for destruído
     if (this.uniceplacTimer !== null) {
       window.clearInterval(this.uniceplacTimer);
-      this.uniceplacTimer = null;
     }
-
-    // Cancelar a animação
     if (this.animationFrameId !== null) {
       window.cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
     }
-
-    // Remover o evento de resize
     if (this.resizeListener !== null) {
       window.removeEventListener('resize', this.resizeListener);
-      this.resizeListener = null;
     }
   }
 
@@ -218,5 +216,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     
     // Continuar a animação
     this.animationFrameId = window.requestAnimationFrame(() => this.animate());
+  }
+
+  iniciarJornada(): void {
+    if (this.authService.isLoggedIn()) {
+      // Esta parte já está funcionando
+      this.router.navigate(['/desafios']);
+    } else {
+    // AQUI está a correção necessária, baseada no seu arquivo de rotas
+    this.router.navigate(['/auth/cadastro']);
+    }
   }
 }

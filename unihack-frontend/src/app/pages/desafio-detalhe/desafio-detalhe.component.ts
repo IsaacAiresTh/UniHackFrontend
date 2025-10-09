@@ -1,47 +1,52 @@
-// desafio-detalhe.component.ts
+// src/app/pages/desafio-detalhe/desafio-detalhe.component.ts
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // << IMPORTANTE: Para usar o ngModel
+import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
-// Importa os modelos e serviços corretos da API
 import { ApiService, Desafio, ActiveChallengeSession } from '../../core/api.service';
 
 @Component({
   selector: 'app-desafio-detalhe',
   standalone: true,
-  // Adiciona o FormsModule aqui
   imports: [CommonModule, RouterModule, FormsModule, NavbarComponent, FooterComponent],
   templateUrl: './desafio-detalhe.component.html',
   styleUrls: ['./desafio-detalhe.component.scss'],
-  // O ApiService já é 'providedIn: root', então não precisa estar aqui
 })
 export class DesafioDetalheComponent implements OnInit {
-  // USA O MODELO 'Desafio' REAL, não o antigo 'DetalhesDesafio'
   desafio: Desafio | undefined;
-
-  // DECLARA AS PROPRIEDADES QUE ESTAVAM FALTANDO
   activeChallengeSession: ActiveChallengeSession | null = null;
   isStarting: boolean = false;
   flag: string = '';
-
   isLoading: boolean = true;
-  errorMessage: string | null = null;
+  errorMessage: string | null = null; // Para erros gerais (carregar, iniciar)
+
+  // --- PROPRIEDADES DE ESTADO PARA A SUBMISSÃO ---
+  isSubmitting: boolean = false;
+  isAlreadySolved: boolean = false;
+  submissionMessage: string = '';
+  submissionMessageType: 'success' | 'error' | '' = '';
 
   constructor(
     private route: ActivatedRoute,
-    private apiService: ApiService // Usa o serviço de API real
+    private apiService: ApiService
   ) {}
 
   ngOnInit(): void {
     const desafioId = this.route.snapshot.paramMap.get('id');
     if (desafioId) {
-      // Chama o método correto do serviço de API
       this.apiService.getChallengeDetails(desafioId).subscribe({
         next: (data) => {
           this.desafio = data;
           this.isLoading = false;
+
+          // ** PONTO CRÍTICO 1: VERIFICAR O STATUS DO DESAFIO **
+          // Esta chamada depende de um novo endpoint no seu backend.
+          // this.apiService.getChallengeStatus(desafioId).subscribe(status => {
+          //   this.isAlreadySolved = status.isSolved;
+          // });
         },
         error: (err) => {
           this.errorMessage = `Erro ao carregar o desafio: ${err.message}`;
@@ -72,32 +77,46 @@ export class DesafioDetalheComponent implements OnInit {
     }
   }
 
+  // ** PONTO CRÍTICO 2: LÓGICA DE SUBMISSÃO CORRIGIDA E COMPLETA **
   onSubmitFlag(): void {
-    if (!this.activeChallengeSession) {
-        this.errorMessage = "Nenhuma sessão de desafio ativa.";
-        return;
-    }
-    if (!this.flag) {
-      this.errorMessage = "Por favor, insira uma flag para validar.";
+    // Previne múltiplos cliques ou submissão se já resolvido
+    if (this.isSubmitting || this.isAlreadySolved) {
       return;
     }
-    this.errorMessage = null;
 
-    // Chama o método do serviço de API, passando o ID do contentor e a flag
+    if (!this.activeChallengeSession) {
+      this.submissionMessage = "Nenhuma sessão de desafio ativa.";
+      this.submissionMessageType = 'error';
+      return;
+    }
+    if (!this.flag) {
+      this.submissionMessage = "Por favor, insira uma flag para validar.";
+      this.submissionMessageType = 'error';
+      return;
+    }
+
+    // Inicia o processo de submissão
+    this.isSubmitting = true;
+    this.submissionMessage = '';
+    this.submissionMessageType = '';
+    this.errorMessage = null; // Limpa erros gerais
+
     this.apiService.submitFlag(this.activeChallengeSession.containerId, this.flag).subscribe({
-        next: (response) => {
-            alert(response.message || "Flag correta! Desafio finalizado.");
-            // Opcional: Redirecionar o utilizador de volta para a lista de desafios após o sucesso
-            // import { Router } from '@angular/router';
-            // constructor(private router: Router) {}
-            // this.router.navigate(['/desafios']);
-            this.activeChallengeSession = null;
-            this.flag = '';
-        },
-        error: (err) => {
-            // O backend envia uma mensagem de erro, vamos mostrá-la
-            this.errorMessage = err.error?.message || "Flag incorreta ou erro no servidor.";
-        }
+      next: (response) => {
+        // Sucesso: flag correta
+        this.isAlreadySolved = true; // Marca como resolvido para travar a UI
+        this.submissionMessage = response.message || "Flag correta! Desafio finalizado.";
+        this.submissionMessageType = 'success';
+      },
+      error: (err) => {
+        // Erro: flag incorreta ou outro problema
+        this.submissionMessage = err.error?.message || "Flag incorreta ou erro no servidor.";
+        this.submissionMessageType = 'error';
+      },
+      complete: () => {
+        // Ao final, para de carregar
+        this.isSubmitting = false;
+      }
     });
   }
 }

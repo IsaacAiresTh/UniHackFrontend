@@ -19,8 +19,8 @@
 
     <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()" *ngIf="!successMessage">
       <div class="form-group">
-        <label for="nome">Nome Completo</label>
-        <input type="text" id="nome" formControlName="nome" placeholder="Seu nome completo">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" formControlName="nome" placeholder="Seu nome">
         <div *ngIf="cadastroForm.get('nome')?.invalid && (cadastroForm.get('nome')?.dirty || cadastroForm.get('nome')?.touched)" class="error-message">
           <small *ngIf="cadastroForm.get('nome')?.errors?.['required']">Nome é obrigatório.</small>
           <small *ngIf="cadastroForm.get('nome')?.errors?.['minlength']">Nome deve ter no mínimo 3 caracteres.</small>

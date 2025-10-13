@@ -1,30 +1,216 @@
 <app-navbar></app-navbar>
 
 <div class="perfil-container">
-  <div *ngIf="isLoading" class="loading-message">Carregando perfil...</div>
-  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <div *ngIf="isLoading" class="loading-message">
+    <div class="loading-spinner"></div>
+    <p>Carregando perfil...</p>
+  </div>
+  
+  <div *ngIf="errorMessage" class="error-message">
+    <div class="error-icon">⚠️</div>
+    <p>{{ errorMessage }}</p>
+  </div>
 
-  <div *ngIf="userProfile && !isLoading" class="perfil-card">
+  <div *ngIf="userProfile && !isLoading" class="perfil-content">
+    <!-- Header do Perfil -->
     <div class="perfil-header">
-      <img [src]="'assets/avatars/default.png'" alt="Avatar de {{ userProfile.username }}" class="avatar">
-      <h1>{{ userProfile.username }}</h1>
-      <p class="matricula">Matrícula: {{ userProfile.matricula }}</p>
-      <span class="role-tag">{{ userProfile.role }}</span>
+      <div class="avatar-container">
+        <img [src]="'assets/avatars/default.png'" alt="Avatar de {{ userProfile.username }}" class="avatar">
+        
+      </div>
+      <div class="user-info">
+        <h1>{{ userProfile.username }}</h1>
+        <p class="matricula">{{ userProfile.matricula }}</p>
+        <div class="level-indicator">
+          <span class="level">Nível {{ getUserLevel() }}</span>
+          <div class="xp-bar">
+            <div class="xp-progress" [style.width.%]="getXPProgress()"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="perfil-stats">
-      <div class="stat-item">
-        <span class="stat-value">{{ userProfile.points }}</span>
-        <span class="stat-label">Pontos</span>
+    <!-- Estatísticas Principais -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-content">
+          <span class="stat-value">{{ userProfile.points }}</span>
+          <span class="stat-label">Pontos Totais</span>
+        </div>
       </div>
-      <div class="stat-item">
-        <span class="stat-value">0</span>
-        <span class="stat-label">Desafios Concluídos</span>
+      <div class="stat-card">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-content">
+          <span class="stat-value">{{ stats.completedChallenges }}</span>
+          <span class="stat-label">Desafios Concluídos</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-content">
+          <span class="stat-value">{{ stats.currentStreak }}</span>
+          <span class="stat-label">Sequência Atual</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-content">
+          <span class="stat-value">{{ stats.averageTime }}min</span>
+          <span class="stat-label">Tempo Médio</span>
+        </div>
       </div>
     </div>
 
-    <div class="perfil-actions">
-      <button class="btn btn-primary" routerLink="/desafios">Ver Desafios</button>
+    <!-- Navegação por Abas -->
+    <div class="tab-navigation">
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'overview'"
+        (click)="setActiveTab('overview')">
+        📊 Visão Geral
+      </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'achievements'"
+        (click)="setActiveTab('achievements')">
+        🏅 Conquistas
+      </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'history'"
+        (click)="setActiveTab('history')">
+        📜 Histórico
+      </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'settings'"
+        (click)="setActiveTab('settings')">
+        ⚙️ Configurações
+      </button>
+    </div>
+
+    <!-- Conteúdo das Abas -->
+    <div class="tab-content">
+      <!-- Aba Visão Geral -->
+      <div *ngIf="activeTab === 'overview'" class="tab-panel">
+        <div class="overview-grid">
+          <!-- Gráfico de Progresso -->
+          <div class="progress-card">
+            <h3>Progresso Geral</h3>
+            <div class="progress-circle">
+              <div class="progress-value">{{ getCompletionPercentage() }}%</div>
+              <div class="progress-text">Concluído</div>
+            </div>
+            <div class="progress-stats">
+              <span>{{ stats.completedChallenges }} de {{ stats.totalChallenges }} desafios</span>
+            </div>
+          </div>
+
+          <!-- Categoria Favorita -->
+          <div class="category-card">
+            <h3>Categoria Favorita</h3>
+            <div class="category-info">
+              <div class="category-icon">🔐</div>
+              <div class="category-details">
+                <span class="category-name">{{ stats.favoriteCategory }}</span>
+                <span class="category-count">5 desafios resolvidos</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sequência Máxima -->
+          <div class="streak-card">
+            <h3>Sequência Máxima</h3>
+            <div class="streak-info">
+              <div class="streak-icon">🔥</div>
+              <div class="streak-details">
+                <span class="streak-value">{{ stats.longestStreak }} dias</span>
+                <span class="streak-date">Março 2024</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aba Conquistas -->
+      <div *ngIf="activeTab === 'achievements'" class="tab-panel">
+        <div class="achievements-grid">
+          <div *ngFor="let achievement of achievements" class="achievement-card" [style.border-color]="getRarityColor(achievement.rarity)">
+            <div class="achievement-icon">{{ achievement.icon }}</div>
+            <div class="achievement-content">
+              <h4>{{ achievement.name }}</h4>
+              <p>{{ achievement.description }}</p>
+              <span class="achievement-date">{{ achievement.unlockedAt | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="achievement-rarity" [style.background-color]="getRarityColor(achievement.rarity)">
+              {{ achievement.rarity | titlecase }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aba Histórico -->
+      <div *ngIf="activeTab === 'history'" class="tab-panel">
+        <div class="history-list">
+          <div *ngFor="let challenge of challengeHistory" class="history-item">
+            <div class="challenge-info">
+              <h4>{{ challenge.title }}</h4>
+              <span class="challenge-category">{{ challenge.category }}</span>
+            </div>
+            <div class="challenge-stats">
+              <span class="challenge-points">+{{ challenge.points }} pts</span>
+              <span class="challenge-time">{{ challenge.timeSpent }}min</span>
+              <span class="challenge-difficulty" [style.background-color]="getDifficultyColor(challenge.difficulty)">
+                {{ challenge.difficulty | titlecase }}
+              </span>
+            </div>
+            <div class="challenge-date">{{ challenge.completedAt | date:'dd/MM/yyyy HH:mm' }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aba Configurações -->
+      <div *ngIf="activeTab === 'settings'" class="tab-panel">
+        <div class="settings-grid">
+          <div class="setting-card">
+            <h3>Preferências</h3>
+            <div class="setting-item">
+              <label>Tema</label>
+              <select class="setting-select">
+                <option>Escuro (Padrão)</option>
+                <option>Claro</option>
+                <option>Automático</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <label>Notificações</label>
+              <div class="toggle-switch">
+                <input type="checkbox" id="notifications" checked>
+                <label for="notifications"></label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="setting-card">
+            <h3>Ações</h3>
+            <div class="action-buttons">
+              <button class="btn btn-secondary">Alterar Senha</button>
+              <button class="btn btn-danger">Excluir Conta</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ações Rápidas -->
+    <div class="quick-actions">
+      <button class="btn btn-primary" routerLink="/desafios">
+        🎯 Ver Desafios
+      </button>
+      <button class="btn btn-secondary" routerLink="/ranking">
+        🏆 Ver Ranking
+      </button>
     </div>
   </div>
 </div>

@@ -50,4 +50,25 @@ export class RankingComponent implements OnInit {
       }
     });
   }
+
+  /**
+   * Calcula o nível do usuário baseado na pontuação
+   * Fórmula: nível = √(pontos/100) + 1
+   * Isso cria uma progressão exponencial onde é mais difícil subir de nível
+   */
+  getUserLevel(points: number): number {
+    return Math.floor(Math.sqrt(points / 100)) + 1;
+  }
+
+  /**
+   * Calcula o progresso da pontuação para a barra de progresso
+   * Retorna uma porcentagem baseada na pontuação máxima do ranking
+   * Usado para mostrar visualmente quão próximo o usuário está do líder
+   */
+  getScoreProgress(points: number): number {
+    // Encontra a maior pontuação entre todos os usuários
+    const maxPoints = Math.max(...this.rankingData.map(user => user.points));
+    // Calcula a porcentagem (evita divisão por zero)
+    return maxPoints > 0 ? (points / maxPoints) * 100 : 0;
+  }
 }

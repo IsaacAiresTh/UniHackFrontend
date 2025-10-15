@@ -6,35 +6,85 @@
     <p>Veja os melhores hackers da faculdade!</p>
   </div>
 
-  <div *ngIf="isLoading" class="loading-message">Carregando ranking...</div>
-  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <div *ngIf="isLoading" class="loading-message">
+    <div class="loading-spinner"></div>
+    <p>Carregando ranking...</p>
+  </div>
+  
+  <div *ngIf="errorMessage" class="error-message">
+    <div class="error-icon">⚠️</div>
+    <p>{{ errorMessage }}</p>
+  </div>
 
-  <div *ngIf="!isLoading && !errorMessage" class="ranking-table-wrapper">
-    <table class="ranking-table">
-      <thead>
-        <tr>
-          <th>Posição</th>
-          <th>Avatar</th>
-          <th>Nome</th>
-          <th>Pontuação</th>
-          </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let user of rankingData; let i = index">
-          <td class="position">
-            <span class="rank-badge rank-{{i + 1}}">{{ i + 1 }}</span>
-          </td>
-          <td class="avatar">
-            <img [src]="'assets/avatars/default.png'" alt="Avatar de {{ user.username }}">
-          </td>
-          <td class="name">{{ user.username }}</td>
-          <td class="score">{{ user.points }} XP</td>
-          </tr>
-        <tr *ngIf="rankingData.length === 0">
-          <td colspan="4" class="no-data">O ranking ainda está vazio. Comece a hackear!</td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- Cards de ranking substituindo a tabela tradicional -->
+  <div *ngIf="!isLoading && !errorMessage" class="ranking-cards">
+    <!-- Loop pelos usuários com índice para posição -->
+    <div *ngFor="let user of rankingData; let i = index" 
+         class="ranking-card" 
+         [class.top-three]="i < 3"
+         [class.podium]="i < 3">
+      
+      <!-- Badge de posição com medalha para top 3 -->
+      <div class="card-rank">
+        <div class="rank-badge rank-{{i + 1}}">
+          <span class="rank-number">{{ i + 1 }}</span>
+          <!-- Medalhas apenas para os 3 primeiros -->
+          <div class="rank-medal" *ngIf="i < 3">
+            <span *ngIf="i === 0">🥇</span>  <!-- Ouro -->
+            <span *ngIf="i === 1">🥈</span>  <!-- Prata -->
+            <span *ngIf="i === 2">🥉</span>  <!-- Bronze -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Avatar com efeito de brilho para top 3 -->
+      <div class="card-avatar">
+        <div class="avatar-container">
+          <img [src]="'assets/avatars/default.png'" alt="Avatar de {{ user.username }}">
+          <!-- Efeito de brilho apenas para os 3 primeiros -->
+          <div class="avatar-glow" *ngIf="i < 3"></div>
+        </div>
+      </div>
+
+      <!-- Informações do usuário -->
+      <div class="card-info">
+        <h3 class="user-name">{{ user.username }}</h3>
+        <p class="user-matricula">{{ user.matricula }}</p>
+        <!-- Estatísticas com ícones -->
+        <div class="user-stats">
+          <span class="stat-item">
+            <span class="stat-icon">🎯</span>
+            <span class="stat-label">Desafios</span>
+          </span>
+          <span class="stat-item">
+            <span class="stat-icon">⭐</span>
+            <!-- Nível calculado baseado na pontuação -->
+            <span class="stat-label">Nível {{ getUserLevel(user.points) }}</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Pontuação com barra de progresso -->
+      <div class="card-score">
+        <div class="score-container">
+          <span class="score-value">{{ user.points }}</span>
+          <span class="score-label">XP</span>
+        </div>
+        <!-- Barra de progresso relativa ao líder -->
+        <div class="score-bar">
+          <div class="score-progress" [style.width.%]="getScoreProgress(user.points)"></div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="rankingData.length === 0" class="empty-ranking">
+      <div class="empty-icon">🏆</div>
+      <h3>Ranking Vazio</h3>
+      <p>O ranking ainda está vazio. Comece a hackear para aparecer aqui!</p>
+      <button class="btn btn-primary" routerLink="/desafios">
+        🎯 Começar Desafios
+      </button>
+    </div>
   </div>
 
   <div class="ranking-actions">

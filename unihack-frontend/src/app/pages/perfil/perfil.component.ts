@@ -3,183 +3,88 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
-import { ApiService, RankingUser } from '../../core/api.service';
-import { AuthService } from '../../auth/auth.service';
+import { RouterModule } from '@angular/router';
 
-// Interfaces para dados expandidos do perfil
+// Importe as novas interfaces e o serviço de API
+import { ApiService, UserProfile } from '../../core/api.service';
+
+// Interfaces para funcionalidades em desenvolvimento
 interface Achievement {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  unlockedAt: Date;
-  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  id: string; name: string; description: string; icon: string; unlockedAt: Date; rarity: 'common' | 'rare' | 'epic' | 'legendary';
 }
-
 interface ChallengeHistory {
-  id: string;
-  title: string;
-  category: string;
-  points: number;
-  completedAt: Date;
-  timeSpent: number; // em minutos
-  difficulty: 'easy' | 'medium' | 'hard' | 'expert';
-}
-
-interface UserStats {
-  totalChallenges: number;
-  completedChallenges: number;
-  totalPoints: number;
-  currentStreak: number;
-  longestStreak: number;
-  averageTime: number;
-  favoriteCategory: string;
+  id: string; title: string; category: string; points: number; completedAt: Date; timeSpent: number; difficulty: 'easy' | 'medium' | 'hard' | 'expert';
 }
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, FooterComponent],
+  imports: [CommonModule, NavbarComponent, FooterComponent, RouterModule],
   templateUrl: './perfil.component.html',
   styleUrls: ['./perfil.component.scss']
 })
 export class PerfilComponent implements OnInit {
-
-  // Utilizaremos o mesmo tipo de usuário do ranking por enquanto
-  userProfile: RankingUser | null = null;
-  isLoading: boolean = true;
-  errorMessage: string | null = null;
   
-  // Novos dados para o perfil expandido
+  userProfile: UserProfile | null = null;
+  
+  // Arrays vazios para funcionalidades em desenvolvimento
   achievements: Achievement[] = [];
   challengeHistory: ChallengeHistory[] = [];
-  stats: UserStats = {
-    totalChallenges: 0,
-    completedChallenges: 0,
-    totalPoints: 0,
-    currentStreak: 0,
-    longestStreak: 0,
-    averageTime: 0,
-    favoriteCategory: 'N/A'
-  };
-  
-  // Interface para dados expandidos
-  activeTab: string = 'overview';
 
-  constructor(
-    private apiService: ApiService,
-    private authService: AuthService
-  ) { }
+  activeTab: string = 'stats';
+  isLoading = true;
+  errorMessage: string | null = null;
+
+  constructor(private apiService: ApiService) {} // Injeta o serviço de API
 
   ngOnInit(): void {
-    this.loadUserProfile();
+    this.loadUserProfile(); // Chama o novo método ao iniciar o componente
   }
 
   loadUserProfile(): void {
     this.isLoading = true;
     this.errorMessage = null;
-
-    // Simulação de busca de perfil. O ideal é ter um endpoint específico.
-    // Como não temos um, vamos buscar o ranking e encontrar o usuário logado.
-    // Esta é uma solução temporária.
-    this.apiService.getRanking().subscribe({
-      next: (ranking) => {
-        const currentUserMatricula = this.authService.getMatriculaFromToken(); // Você precisará criar este método no AuthService
-        if (currentUserMatricula) {
-          this.userProfile = ranking.find(user => user.matricula === currentUserMatricula) || null;
-          if (this.userProfile) {
-            this.loadMockData(); // Carregar dados mockados para demonstração
-          }
-        }
+    
+    this.apiService.getUserProfile().subscribe({
+      next: (profileData) => {
+        // Dados recebidos com sucesso!
+        this.userProfile = profileData;
+        
+        // Arrays permanecem vazios até implementação das funcionalidades 
+        
         this.isLoading = false;
       },
       error: (err) => {
-        console.error("Erro ao buscar dados do perfil:", err);
-        this.errorMessage = "Não foi possível carregar os dados do perfil. Tente novamente mais tarde.";
+        // Tratamento de erro
+        console.error('Erro ao carregar perfil:', err);
+        this.errorMessage = 'Não foi possível carregar os dados do perfil. Tente novamente mais tarde.';
         this.isLoading = false;
       }
     });
   }
 
-  loadMockData(): void {
-    // Dados mockados para demonstração
-    this.achievements = [
-      {
-        id: '1',
-        name: 'Primeiro Hack',
-        description: 'Resolveu seu primeiro desafio',
-        icon: '🎯',
-        unlockedAt: new Date('2024-01-15'),
-        rarity: 'common'
-      },
-      {
-        id: '2',
-        name: 'Mestre da Criptografia',
-        description: 'Resolveu 10 desafios de criptografia',
-        icon: '🔐',
-        unlockedAt: new Date('2024-02-20'),
-        rarity: 'rare'
-      },
-      {
-        id: '3',
-        name: 'Streak Master',
-        description: 'Manteve uma sequência de 7 dias',
-        icon: '🔥',
-        unlockedAt: new Date('2024-03-10'),
-        rarity: 'epic'
-      }
-    ];
 
-    this.challengeHistory = [
-      {
-        id: '1',
-        title: 'Caesar Cipher',
-        category: 'Criptografia',
-        points: 50,
-        completedAt: new Date('2024-03-15'),
-        timeSpent: 25,
-        difficulty: 'easy'
-      },
-      {
-        id: '2',
-        title: 'SQL Injection',
-        category: 'Web Security',
-        points: 100,
-        completedAt: new Date('2024-03-14'),
-        timeSpent: 45,
-        difficulty: 'medium'
-      },
-      {
-        id: '3',
-        title: 'Buffer Overflow',
-        category: 'Binary Exploitation',
-        points: 200,
-        completedAt: new Date('2024-03-13'),
-        timeSpent: 90,
-        difficulty: 'hard'
-      }
-    ];
-
-    this.stats = {
-      totalChallenges: 15,
-      completedChallenges: 8,
-      totalPoints: this.userProfile?.points || 0,
-      currentStreak: 3,
-      longestStreak: 7,
-      averageTime: 35,
-      favoriteCategory: 'Criptografia'
-    };
-  }
+  // --- MÉTODOS AUXILIARES (usando os dados de `userProfile`) ---
 
   setActiveTab(tab: string): void {
     this.activeTab = tab;
   }
-
-  getCompletionPercentage(): number {
-    if (this.stats.totalChallenges === 0) return 0;
-    return Math.round((this.stats.completedChallenges / this.stats.totalChallenges) * 100);
+  
+  getUserLevel(): number {
+    if (!this.userProfile) return 1;
+    return Math.floor(Math.sqrt(this.userProfile.points / 100)) + 1;
+  }
+  
+  getXPProgress(): number {
+    if (!this.userProfile) return 0;
+    const currentLevel = this.getUserLevel();
+    const xpForCurrentLevel = 100 * Math.pow(currentLevel - 1, 2);
+    const xpForNextLevel = 100 * Math.pow(currentLevel, 2);
+    const progress = (this.userProfile.points - xpForCurrentLevel) / (xpForNextLevel - xpForCurrentLevel) * 100;
+    return progress;
   }
 
+  // O resto dos seus métodos...
   getRarityColor(rarity: string): string {
     switch (rarity) {
       case 'common': return '#9CA3AF';
@@ -192,21 +97,11 @@ export class PerfilComponent implements OnInit {
 
   getDifficultyColor(difficulty: string): string {
     switch (difficulty) {
-      case 'easy': return '#10B981';
+      case 'easy': return '#00E676';
       case 'medium': return '#F59E0B';
       case 'hard': return '#EF4444';
       case 'expert': return '#8B5CF6';
-      default: return '#6B7280';
+      default: return '#9CA3AF';
     }
-  }
-
-  getUserLevel(): number {
-    if (!this.userProfile) return 1;
-    return Math.floor(this.userProfile.points / 100) + 1;
-  }
-
-  getXPProgress(): number {
-    if (!this.userProfile) return 0;
-    return this.userProfile.points % 100;
   }
 }

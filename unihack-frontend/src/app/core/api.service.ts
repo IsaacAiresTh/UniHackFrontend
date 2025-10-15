@@ -1,16 +1,16 @@
-// src/app/core/services/api.service.ts (exemplo de caminho)
+// src/app/core/services/api.service.ts (seu caminho atual)
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// Seus modelos de dados (interfaces)
+// SUAS INTERFACES EXISTENTES
 export interface Desafio {
   id: string;
   title: string;
   description: string;
   difficulty: 'EASY' | 'MEDIUM' | 'HARD';
   score: number;
-  dockerImage: string; // Importante, vindo do backend
+  dockerImage: string;
 }
 
 export interface ActiveChallengeSession {
@@ -26,45 +26,58 @@ export interface RankingUser {
   points: number;
 }
 
+// --- NOVAS INTERFACES PARA O PERFIL ---
+export interface UserStats {
+  completedChallenges: number;
+  totalChallenges: number;
+  progressPercentage: number;
+  favoriteCategory: string;
+}
+
+export interface UserProfile {
+  username: string;
+  matricula: string;
+  points: number;
+  stats: UserStats;
+}
+
+
 const API_BASE_URL = 'http://localhost:8080'; // A URL do seu backend
 
 @Injectable({
-  providedIn: 'root' // Fornecido para toda a aplicação
+  providedIn: 'root'
 })
 export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  // 1. Busca a lista de desafios do backend
   getAllChallenges(): Observable<Desafio[]> {
-    // NOTE: O endpoint no seu backend é /challenges/all
     return this.http.get<Desafio[]>(`${API_BASE_URL}/challenges/all`);
   }
 
-  // 2. Busca os detalhes de UM desafio específico
   getChallengeDetails(id: string): Observable<Desafio> {
-    // NOTE: O endpoint no seu backend é /challenges/details/{id}
     return this.http.get<Desafio>(`${API_BASE_URL}/challenges/details/${id}`);
   }
 
-  // 3. Pede para o backend iniciar um desafio
   startChallenge(id: string): Observable<ActiveChallengeSession> {
-    // NOTE: O endpoint no seu backend é /challenges/{id}/start
     return this.http.post<ActiveChallengeSession>(`${API_BASE_URL}/challenges/${id}/start`, {});
   }
 
   getRanking(): Observable<RankingUser[]> {
-  return this.http.get<RankingUser[]>(`${API_BASE_URL}/users/ranking`);
+    // --- ALTERAÇÃO APLICADA AQUI ---
+    // A URL foi corrigida para usar o prefixo /api, padronizando com o resto da aplicação.
+    return this.http.get<RankingUser[]>(`${API_BASE_URL}/api/users/ranking`);
   }
 
   submitFlag(containerId: string, flag: string): Observable<any> {
     return this.http.post(`${API_BASE_URL}/challenges/submit`, { containerId, flag });
   }
 
-  // 4. (NOVO) Pede para o backend verificar o status de um desafio para o usuário atual
   getChallengeStatus(id: string): Observable<{ isSolved: boolean }> {
-  // NOTE: O endpoint no seu backend seria algo como /challenges/{id}/status
-  // Ele deve retornar um JSON como { "isSolved": true } ou { "isSolved": false }
     return this.http.get<{ isSolved: boolean }>(`${API_BASE_URL}/challenges/${id}/status`);
+  }
+
+  getUserProfile(): Observable<UserProfile> {
+    return this.http.get<UserProfile>(`${API_BASE_URL}/api/users/me/profile`);
   }
 }

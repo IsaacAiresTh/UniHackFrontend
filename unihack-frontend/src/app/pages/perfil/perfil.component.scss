@@ -141,11 +141,13 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 230, 118, 0.1);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 230, 118, 0.15);
+      border-color: rgba(0, 230, 118, 0.3);
     }
     
     .stat-icon {
@@ -155,8 +157,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(0, 230, 118, 0.1);
+      background: linear-gradient(135deg, rgba(0, 230, 118, 0.1), rgba(0, 255, 136, 0.05));
       border-radius: 12px;
+      border: 1px solid rgba(0, 230, 118, 0.2);
     }
     
     .stat-content {
@@ -168,12 +171,14 @@
         font-weight: bold;
         color: var(--text-color);
         line-height: 1;
+        text-shadow: 0 0 10px rgba(0, 230, 118, 0.2);
       }
       
       .stat-label {
         font-size: 0.9rem;
         color: rgba(255, 255, 255, 0.6);
         margin-top: 0.2rem;
+        font-weight: 500;
       }
     }
   }
@@ -187,6 +192,8 @@
   background: rgba(255, 255, 255, 0.05);
   padding: 0.5rem;
   border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
   
   .tab-button {
     flex: 1;
@@ -196,18 +203,41 @@
     color: rgba(255, 255, 255, 0.7);
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
     
     &:hover {
       background: rgba(255, 255, 255, 0.1);
       color: rgba(255, 255, 255, 0.9);
+      transform: translateY(-1px);
+      
+      &::before {
+        left: 100%;
+      }
     }
     
     &.active {
-      background: var(--primary-color);
+      background: linear-gradient(135deg, var(--primary-color), #00ff88);
       color: #000;
-      box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3);
+      box-shadow: 0 6px 20px rgba(0, 230, 118, 0.4);
+      transform: translateY(-2px);
+      
+      &::before {
+        display: none;
+      }
     }
   }
 }
@@ -216,6 +246,114 @@
 .tab-content {
   .tab-panel {
     animation: fadeIn 0.3s ease;
+  }
+}
+
+/* Aviso de Desenvolvimento */
+.development-notice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--card-bg);
+  border-radius: 16px;
+  border: 2px dashed rgba(0, 230, 118, 0.3);
+  margin: 2rem 0;
+  
+  .dev-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    animation: pulse 2s infinite;
+  }
+  
+  h3 {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(0, 230, 118, 0.3);
+  }
+  
+  p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+  
+  .dev-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: 600px;
+    
+    .dev-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1rem;
+      background: rgba(0, 230, 118, 0.1);
+      border-radius: 8px;
+      border: 1px solid rgba(0, 230, 118, 0.2);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: rgba(0, 230, 118, 0.15);
+        transform: translateY(-2px);
+      }
+      
+      .dev-feature-icon {
+        font-size: 1.5rem;
+      }
+      
+      span:last-child {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+/* Badges de Desenvolvimento */
+.dev-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.8rem;
+  background: rgba(255, 193, 7, 0.2);
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  border-radius: 12px;
+  font-size: 0.8rem;
+  color: #ffc107;
+  font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+.dev-badge-small {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 193, 7, 0.2);
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  border-radius: 50%;
+  font-size: 0.7rem;
+  margin-left: 0.5rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.7; 
+    transform: scale(1.05);
   }
 }
 
@@ -596,6 +734,24 @@
 }
 
 /* Responsividade */
+@media (max-width: 1024px) {
+  .perfil-container {
+    padding: 1.5rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  
+  .overview-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  
+  .achievements-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .perfil-container {
     padding: 1rem;
@@ -605,35 +761,266 @@
     flex-direction: column;
     text-align: center;
     gap: 1rem;
+    padding: 1.5rem;
+    
+    .avatar-container .avatar {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .user-info h1 {
+      font-size: 2rem;
+    }
+    
+    .level-indicator .xp-bar {
+      width: 150px;
+    }
   }
   
   .stats-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+    
+    .stat-card {
+      padding: 1rem;
+      
+      .stat-icon {
+        font-size: 1.5rem;
+        width: 50px;
+        height: 50px;
+      }
+      
+      .stat-content .stat-value {
+        font-size: 1.5rem;
+      }
+    }
   }
   
   .tab-navigation {
     flex-direction: column;
+    gap: 0.5rem;
+    
+    .tab-button {
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
+    }
   }
   
   .overview-grid {
     grid-template-columns: 1fr;
-  }
-  
-  .achievements-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .history-item {
-    flex-direction: column;
     gap: 1rem;
-    text-align: center;
+    
+    .progress-card, .category-card, .streak-card {
+      padding: 1rem;
+      
+      .progress-circle {
+        width: 100px;
+        height: 100px;
+        
+        &::before {
+          width: 70px;
+          height: 70px;
+        }
+      }
+    }
+  }
+  
+  .development-notice {
+    padding: 2rem 1rem;
+    
+    .dev-icon {
+      font-size: 3rem;
+    }
+    
+    h3 {
+      font-size: 1.5rem;
+    }
+    
+    p {
+      font-size: 1rem;
+    }
+    
+    .dev-features {
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+      
+      .dev-feature {
+        padding: 0.8rem;
+        
+        .dev-feature-icon {
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+  
+  .history-list {
+    .history-item {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+      padding: 1rem;
+      
+      .challenge-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
   }
   
   .settings-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+    
+    .setting-card {
+      padding: 1rem;
+    }
   }
   
   .quick-actions {
     flex-direction: column;
+    gap: 0.8rem;
+    
+    .btn {
+      padding: 0.8rem 1.5rem;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .perfil-container {
+    padding: 0.5rem;
+  }
+  
+  .perfil-header {
+    padding: 1rem;
+    
+    .avatar-container .avatar {
+      width: 80px;
+      height: 80px;
+    }
+    
+    .user-info h1 {
+      font-size: 1.5rem;
+    }
+    
+    .level-indicator .xp-bar {
+      width: 120px;
+    }
+  }
+  
+  .stats-grid .stat-card {
+    padding: 0.8rem;
+    
+    .stat-icon {
+      font-size: 1.2rem;
+      width: 40px;
+      height: 40px;
+    }
+    
+    .stat-content .stat-value {
+      font-size: 1.2rem;
+    }
+  }
+  
+  .tab-navigation .tab-button {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  
+  .overview-grid .progress-card, 
+  .overview-grid .category-card, 
+  .overview-grid .streak-card {
+    padding: 0.8rem;
+    
+    .progress-circle {
+      width: 80px;
+      height: 80px;
+      
+      &::before {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .progress-value {
+        font-size: 1.2rem;
+      }
+      
+      .progress-text {
+        font-size: 0.7rem;
+      }
+    }
+  }
+  
+  .achievements-grid .achievement-card {
+    padding: 0.8rem;
+    
+    .achievement-icon {
+      font-size: 1.8rem;
+    }
+    
+    .achievement-content h4 {
+      font-size: 1rem;
+    }
+    
+    .achievement-content p {
+      font-size: 0.8rem;
+    }
+  }
+  
+  .history-list .history-item {
+    padding: 0.8rem;
+    
+    .challenge-info h4 {
+      font-size: 1rem;
+    }
+    
+    .challenge-info .challenge-category {
+      font-size: 0.8rem;
+    }
+  }
+  
+  .settings-grid .setting-card {
+    padding: 0.8rem;
+    
+    h3 {
+      font-size: 1rem;
+    }
+  }
+  
+  .quick-actions .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .development-notice {
+    padding: 1.5rem 0.8rem;
+    
+    .dev-icon {
+      font-size: 2.5rem;
+    }
+    
+    h3 {
+      font-size: 1.3rem;
+    }
+    
+    p {
+      font-size: 0.9rem;
+    }
+    
+    .dev-features {
+      .dev-feature {
+        padding: 0.6rem;
+        
+        .dev-feature-icon {
+          font-size: 1rem;
+        }
+        
+        span:last-child {
+          font-size: 0.8rem;
+        }
+      }
+    }
   }
 }

@@ -1,21 +1,16 @@
-// src/app/core/services/api.service.ts (seu caminho atual)
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-// SUAS INTERFACES EXISTENTES
 export interface Desafio {
   id: string;
   title: string;
   description: string;
   difficulty: 'EASY' | 'MEDIUM' | 'HARD';
   score: number;
-  dockerImage: string;
-}
-
-export interface ActiveChallengeSession {
-  containerId: string;
-  accessUrl: string;
+  slug: string;
+  category: string | null;
 }
 
 export interface RankingUser {
@@ -26,7 +21,6 @@ export interface RankingUser {
   points: number;
 }
 
-// --- NOVAS INTERFACES PARA O PERFIL ---
 export interface UserStats {
   completedChallenges: number;
   totalChallenges: number;
@@ -41,43 +35,36 @@ export interface UserProfile {
   stats: UserStats;
 }
 
-
-const API_BASE_URL = 'http://localhost:8080'; // A URL do seu backend
-
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  constructor(private http: HttpClient) { }
+  private readonly base = environment.apiUrl;
+
+  constructor(private http: HttpClient) {}
 
   getAllChallenges(): Observable<Desafio[]> {
-    return this.http.get<Desafio[]>(`${API_BASE_URL}/challenges/all`);
+    return this.http.get<Desafio[]>(`${this.base}/challenges/all`);
   }
 
   getChallengeDetails(id: string): Observable<Desafio> {
-    return this.http.get<Desafio>(`${API_BASE_URL}/challenges/details/${id}`);
+    return this.http.get<Desafio>(`${this.base}/challenges/details/${id}`);
   }
 
-  startChallenge(id: string): Observable<ActiveChallengeSession> {
-    return this.http.post<ActiveChallengeSession>(`${API_BASE_URL}/challenges/${id}/start`, {});
+  getChallengeStatus(id: string): Observable<{ solved: boolean }> {
+    return this.http.get<{ solved: boolean }>(`${this.base}/challenges/${id}/status`);
+  }
+
+  submitFlag(flag: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.base}/challenges/submit`, { flag });
   }
 
   getRanking(): Observable<RankingUser[]> {
-    // --- ALTERAÇÃO APLICADA AQUI ---
-    // A URL foi corrigida para usar o prefixo /api, padronizando com o resto da aplicação.
-    return this.http.get<RankingUser[]>(`${API_BASE_URL}/api/users/ranking`);
-  }
-
-  submitFlag(containerId: string, flag: string): Observable<any> {
-    return this.http.post(`${API_BASE_URL}/challenges/submit`, { containerId, flag });
-  }
-
-  getChallengeStatus(id: string): Observable<{ isSolved: boolean }> {
-    return this.http.get<{ isSolved: boolean }>(`${API_BASE_URL}/challenges/${id}/status`);
+    return this.http.get<RankingUser[]>(`${this.base}/users/ranking`);
   }
 
   getUserProfile(): Observable<UserProfile> {
-    return this.http.get<UserProfile>(`${API_BASE_URL}/api/users/me/profile`);
+    return this.http.get<UserProfile>(`${this.base}/users/me`);
   }
 }

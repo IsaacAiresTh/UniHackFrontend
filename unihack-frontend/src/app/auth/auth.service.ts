@@ -20,14 +20,14 @@ export class AuthService {
   // ****** ALTERAÇÃO APLICADA AQUI ******
   // O método agora espera um único objeto userData com os campos corretos para o backend.
   register(userData: { name: string; matricula: string; password: string; confirmPassword: string; }): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/register`, userData)
+    return this.http.post<any>(`${this.apiUrl}/auth/register`, userData)
       .pipe(
         catchError(this.handleError)
       );
   }
 
   login(matricula: string, password: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/login`, { matricula,  password})
+    return this.http.post<any>(`${this.apiUrl}/auth/login`, { matricula, password })
       .pipe(
         tap(response => {
           if (response && response.token) {

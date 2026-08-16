@@ -1,0 +1,17 @@
+# O npm ci reinstala as dependências dentro da imagem; mandar o node_modules
+# local no contexto de build só deixa tudo mais lento (e pode conter binários
+# compilados para outra plataforma).
+node_modules
+dist
+.angular
+
+.git
+.gitignore
+.vscode
+.idea
+
+*.log
+npm-debug.log*
+Dockerfile
+.dockerignore
+README.md
